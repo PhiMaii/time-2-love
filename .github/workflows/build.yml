@@ -14,22 +14,26 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install Arduino CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          export PATH=$PATH:$HOME/bin
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+        with:
+          version: latest
 
-      - name: Initialize Arduino CLI
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install esp8266:esp8266
+      - name: Update core index
+        run: arduino-cli core update-index
+
+      - name: Install ESP8266 package
+        run: arduino-cli core install esp8266:esp8266
 
       - name: List installed cores
         run: arduino-cli core list
 
       - name: Configure Sketchbook
         run: |
-          mkdir -p ~/Arduino/libraries
+          mkdir -p ~/Arduino/
+
+      - name: Verify install
+        run: arduino-cli board listall
 
       - name: Compile firmware
         run: |
