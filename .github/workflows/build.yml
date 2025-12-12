@@ -16,12 +16,16 @@ jobs:
 
       - name: Install Arduino CLI
         uses: arduino/setup-arduino-cli@v1
+        with:
+          version: 1.9.3 # stable version
 
       - name: Install ESP8266 Core
         run: |
-          arduino-cli config init
           arduino-cli core update-index
-          arduino-cli core install esp8266:esp8266
+          arduino-cli core install esp8266:esp8266 --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
+
+      - name: List installed cores
+        run: arduino-cli core list
 
       - name: Configure Sketchbook
         run: |
@@ -30,8 +34,8 @@ jobs:
       - name: Compile firmware
         run: |
           arduino-cli compile \
-            --fqbn esp8266:esp8266:d1_mini \
-            --output-dir build .
+          --fqbn esp8266:esp8266:d1_mini \
+          --output-dir build .
 
       - name: Extract version from Config.h
         id: ver
