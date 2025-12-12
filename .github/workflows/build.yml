@@ -40,11 +40,11 @@ jobs:
           --fqbn esp8266:esp8266:d1_mini \
           esp_client
 
-      - name: Extract version from Config.h
-        id: ver
+      - name: Read version from Config.h
         run: |
-          VERSION=$(grep -oP '(?<=#define SOFTWARE_VERSION ")[^"]+' Config.h)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(grep -oP '(?<=#define SOFTWARE_VERSION ")[^"]+' esp_client/Config.h)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
 
       - name: Create version.txt
         run: echo "${{ steps.ver.outputs.version }}" > build/version.txt
