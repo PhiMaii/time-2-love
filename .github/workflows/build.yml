@@ -46,8 +46,11 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
 
-      - name: Create version.txt
-        run: echo "${{ steps.ver.outputs.version }}" > build/version.txt
+      - name: Write version file
+        run: |
+          mkdir -p build
+          echo "" > build/version.txt
+
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
