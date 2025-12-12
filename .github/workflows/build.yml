@@ -14,10 +14,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
-        with:
-          version: latest
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
 
       - name: Update core index
         run: arduino-cli core update-index
