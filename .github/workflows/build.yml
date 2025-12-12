@@ -27,9 +27,12 @@ jobs:
           arduino-cli core install esp8266:esp8266 \
           --additional-urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
 
-
       - name: List installed cores
         run: arduino-cli core list
+
+      - name: Install U8g2 library
+        run: |
+          arduino-cli lib install U8g2
 
       - name: Compile ESP8266 D1 mini sketch
         run: |
