@@ -3,7 +3,7 @@ name: Build ESP8266 Firmware
 on:
   push:
     branches:
-      - main
+      - production
   workflow_dispatch:
 
 jobs:
@@ -41,6 +41,9 @@ jobs:
             --fqbn esp8266:esp8266:d1_mini \
             --build-path build \
             esp_client
+
+      - name: Rename binary to firmware.bin
+        run: mv esp_client.ino.bin firmware.bin
 
       - name: Read version from Config.h
         id: ver
