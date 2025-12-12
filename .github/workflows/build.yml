@@ -31,18 +31,11 @@ jobs:
       - name: List installed cores
         run: arduino-cli core list
 
-      - name: Configure Sketchbook
-        run: |
-          mkdir -p ~/Arduino/
-
-      - name: Verify install
-        run: arduino-cli board listall
-
       - name: Compile ESP8266 D1 mini sketch
         run: |
           arduino-cli compile \
           --fqbn esp8266:esp8266:d1_mini \
-          esp-client
+          esp_client
 
       - name: Extract version from Config.h
         id: ver
