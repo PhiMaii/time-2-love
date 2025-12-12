@@ -1,0 +1,54 @@
+name: Build ESP8266 Firmware
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install ESP8266 Core
+        run: |
+          arduino-cli config init
+          arduino-cli core update-index
+          arduino-cli core install esp8266:esp8266
+
+      - name: Configure Sketchbook
+        run: |
+          mkdir -p ~/Arduino/libraries
+
+      - name: Compile firmware
+        run: |
+          arduino-cli compile \
+            --fqbn esp8266:esp8266:d1_mini \
+            --output-dir build .
+
+      - name: Extract version from Config.h
+        id: ver
+        run: |
+          VERSION=$(grep -oP '(?<=#define SOFTWARE_VERSION ")[^"]+' Config.h)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create version.txt
+        run: echo "${{ steps.ver.outputs.version }}" > build/version.txt
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Release v${{ steps.ver.outputs.version }}
+          files: |
+            build/*.bin
+            build/version.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
