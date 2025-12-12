@@ -39,11 +39,9 @@ jobs:
           mkdir -p build
           arduino-cli compile \
             --fqbn esp8266:esp8266:d1_mini \
+            --build-properties build.project_name=firmware \
             --build-path build \
             esp_client
-
-      - name: Rename binary to firmware.bin
-        run: mv esp_client.ino.bin firmware.bin
 
       - name: Read version from Config.h
         id: ver
