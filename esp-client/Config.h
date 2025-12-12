@@ -8,7 +8,7 @@
 #define WIFI_PASS "95925916586060820281"
 
 // Device ID - change on the second device
-#define DEVICE_ID "time2love-01"
+// #define DEVICE_ID "time2love-01"
 
 // Server URL (http)
 #define SERVER_URL "http://192.168.178.153:3000" // change to your server IP:port

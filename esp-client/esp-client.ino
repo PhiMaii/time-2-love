@@ -7,6 +7,8 @@
 #include "EventClock.h"
 #include "DisplayManager.h"
 #include "ButtonHandler.h"
+#include "EEPROMManager.h"
+
 
 // Globals
 ServerClient server;
@@ -18,11 +20,25 @@ unsigned long lastEventFetch = 0;
 unsigned long lastBlinkPoll = 0;
 unsigned long lastRegister = 0;
 
+String DEVICE_ID = "";
+
 void setup() {
   Serial.begin(115200);
-  delay(50);
+
+  EEPROMManager::begin();
+  EEPROMManager::loadOrInitialize();
+
+  DEVICE_ID = EEPROMManager::getDeviceId();
+  String swVersion = EEPROMManager::getSwVersion();
+
+  Serial.println("Device ID from EEPROM: " + DEVICE_ID);
+  Serial.println("Software Version: " + swVersion);
+  Serial.println("######################");
+
+  delay(500);
+
   Serial.println();
-  Serial.printf("Starting device %s\n", DEVICE_ID);
+  Serial.print("Starting device " + DEVICE_ID + "\n");
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // builtin LED active LOW on many boards
