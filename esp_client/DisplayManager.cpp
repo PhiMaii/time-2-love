@@ -2,6 +2,8 @@
 #include <U8g2lib.h>
 #include <Wire.h>
 
+#include "Images.h"
+
 // SSD1306 128x32 I2C constructor
 static U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
 
@@ -17,6 +19,7 @@ void DisplayManager::begin() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.drawStr(0, 10, "Init...");
+  // u8g2.drawBitmap(0, 0, STARTUP_SCREEN_INVERTED_WIDTH, STARTUP_SCREEN_INVERTED_HEIGHT, startup_screen_inverted);
   u8g2.sendBuffer();
 }
 
@@ -30,7 +33,7 @@ void DisplayManager::startBlinking(unsigned long ms) {
 }
 
 void DisplayManager::updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp) {
-  if (millis() - _lastDrawMs < 60) return; // throttle ~16fps
+  if (millis() - _lastDrawMs < 60) return;  // throttle ~16fps
   _lastDrawMs = millis();
 
   u8g2.clearBuffer();
@@ -52,8 +55,7 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
   // Server status top-right
   if (serverUp) {
     u8g2.drawBox(120, 2, 6, 6);
-  }
-  else u8g2.drawFrame(120, 2, 6, 6);
+  } else u8g2.drawFrame(120, 2, 6, 6);
 
   // if temp message
   if (_tempUntil > millis()) {
@@ -65,14 +67,17 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
 
   // main countdown text
   if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
-    u8g2.setFont(u8g2_font_6x10_tf); // old font
+    u8g2.setFont(u8g2_font_6x10_tf);  // old font
     u8g2.drawStr(0, 16, "No event / passed");
   } else {
     char buf[48];
     snprintf(buf, sizeof(buf), "%ldw %ldt %ldh %ldm", weeks, days, hours, minutes);
-    // u8g2.setFont(u8g2_font_7x13_mf);
     u8g2.setFont(u8g2_font_10x20_tf);
-    u8g2.drawStr(2, 31, buf);
+
+    // Get display width and text width, then center
+    int textWidth = u8g2.getStrWidth(buf);
+    int x = (u8g2.getDisplayWidth() - textWidth) / 2;
+    u8g2.drawStr(x, 31, buf);
   }
 
   // blinking overlay
