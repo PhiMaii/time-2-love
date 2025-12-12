@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SOFTWARE_VERSION "0.1.0"
+#define SOFTWARE_VERSION "0.1.1"
 
 // WiFi credentials
 #define WIFI_SSID "FRITZ!Box 7590 NU"
