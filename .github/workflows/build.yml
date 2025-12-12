@@ -42,9 +42,8 @@ jobs:
             --build-path build \
             esp_client
 
-      - name: Rename binary
-        run: |
-          mv esp_client.ino.bin firmware.bin
+      - name: Rename binary to firmware.bin
+        run: mv esp_client.ino.bin firmware.bin
 
       - name: Read version from Config.h
         id: ver
