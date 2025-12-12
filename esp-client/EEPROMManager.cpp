@@ -16,8 +16,8 @@ void EEPROMManager::loadOrInitialize() {
 
     EEPROM.write(EEPROM_MAGIC_ADDR, EEPROM_MAGIC_VAL);
 
-    writeString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN, "time2love-02");
-    writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, "0.1.0");
+    writeString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN, "time2love-99");
+    writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, "0.0.0");
 
     EEPROM.commit();
   }

@@ -23,6 +23,8 @@ unsigned long lastRegister = 0;
 String DEVICE_ID = "";
 
 void setup() {
+  delay(100);
+  
   Serial.begin(115200);
 
   delay(500);

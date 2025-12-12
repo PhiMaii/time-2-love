@@ -44,13 +44,15 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
   // else bars = 3;
   bars = 4;
   for (int i = 0; i < bars; ++i) {
-    int x = 2 + i * 4;
-    int h = 3 + i * 3;
-    u8g2.drawBox(x, 2 + (10 - h), 3, h);
+    int x = 2 + i * 3;
+    int h = 3 + i * 2;
+    u8g2.drawBox(x, 0 + (10 - h), 2, h);
   }
 
   // Server status top-right
-  if (serverUp) u8g2.drawBox(120, 2, 6, 6);
+  if (serverUp) {
+    u8g2.drawBox(120, 2, 6, 6);
+  }
   else u8g2.drawFrame(120, 2, 6, 6);
 
   // if temp message
@@ -67,7 +69,7 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
     u8g2.drawStr(0, 16, "No event / passed");
   } else {
     char buf[48];
-    snprintf(buf, sizeof(buf), "%ldw %ldt %lds %ldm", weeks, days, hours, minutes);
+    snprintf(buf, sizeof(buf), "%ldw %ldt %ldh %ldm", weeks, days, hours, minutes);
     // u8g2.setFont(u8g2_font_7x13_mf);
     u8g2.setFont(u8g2_font_10x20_tf);
     u8g2.drawStr(2, 31, buf);

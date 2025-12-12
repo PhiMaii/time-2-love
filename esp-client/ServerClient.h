@@ -25,6 +25,7 @@ private:
   String _peers[8];
   uint8_t _peerCount;
   unsigned long _lastPing;
+  boolean _lastPingState;
   void parsePeersFromResponse(const String& resp);
 };
 

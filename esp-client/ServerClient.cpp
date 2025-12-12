@@ -9,6 +9,7 @@ ServerClient::ServerClient() {
   _baseUrl = "";
   _peerCount = 0;
   _lastPing = 0;
+  _lastPingState = false;
 }
 
 void ServerClient::begin(const char* baseUrl) {
@@ -141,8 +142,15 @@ String ServerClient::getFirstPeer() {
 }
 
 bool ServerClient::isServerReachable() {
-  if (WiFi.status() != WL_CONNECTED) return false;
-  if (millis() - _lastPing < 5000) return true; // avoid spamming
+  if (WiFi.status() != WL_CONNECTED){
+    _lastPingState = false;
+    return false;
+  } 
+  if (millis() - _lastPing < 5000){
+    // Serial.println("#### online bc avoid spam!");
+    return _lastPingState; // avoid spamming
+  } 
+
   _lastPing = millis();
 
   WiFiClient wifi;
@@ -151,5 +159,12 @@ bool ServerClient::isServerReachable() {
   http.begin(wifi, url);
   int code = http.GET();
   http.end();
-  return (code == 200);
+  // Serial.println(code);
+  if(code == 200){
+    _lastPingState = true;
+    return true;
+  }else{
+    _lastPingState = false;
+    return false;
+  }
 }
