@@ -18,7 +18,7 @@
 #define LED_PIN LED_BUILTIN  // onboard LED
 
 // Intervals (ms)
-#define EVENT_FETCH_INTERVAL 10UL * 1000UL  // 60s
+#define EVENT_FETCH_INTERVAL 60UL * 1000UL  // 60s
 #define BLINK_POLL_INTERVAL 1UL * 1000UL    // 1s
 #define REGISTER_INTERVAL 5UL * 60UL * 1000UL    // 5min
 

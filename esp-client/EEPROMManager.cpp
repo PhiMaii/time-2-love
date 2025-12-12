@@ -16,7 +16,7 @@ void EEPROMManager::loadOrInitialize() {
 
     EEPROM.write(EEPROM_MAGIC_ADDR, EEPROM_MAGIC_VAL);
 
-    writeString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN, "time2love-01");
+    writeString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN, "time2love-02");
     writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, "0.1.0");
 
     EEPROM.commit();
@@ -26,9 +26,9 @@ void EEPROMManager::loadOrInitialize() {
   _deviceId   = readString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN);
   _swVersion  = readString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN);
 
-  Serial.println("[EEPROM] Loaded:");
-  Serial.println("  Device ID: " + _deviceId);
-  Serial.println("  SW Version: " + _swVersion);
+  // Serial.println("[EEPROM] Loaded:");
+  // Serial.println("  Device ID: " + _deviceId);
+  // Serial.println("  SW Version: " + _swVersion);
 }
 
 String EEPROMManager::getDeviceId() { return _deviceId; }

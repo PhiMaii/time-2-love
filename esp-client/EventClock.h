@@ -11,6 +11,7 @@ public:
   long getWeeks();
   long getDays();
   long getHours();
+  long getMinutes();
   bool hasEvent();
 
 private:

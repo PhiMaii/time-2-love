@@ -29,7 +29,7 @@ void DisplayManager::startBlinking(unsigned long ms) {
   _blinkUntil = millis() + ms;
 }
 
-void DisplayManager::updateDisplay(long weeks, long days, long hours, int rssi, bool serverUp) {
+void DisplayManager::updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp) {
   if (millis() - _lastDrawMs < 60) return; // throttle ~16fps
   _lastDrawMs = millis();
 
@@ -62,14 +62,15 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, int rssi, 
   }
 
   // main countdown text
-  if (weeks == 0 && days == 0 && hours == 0) {
-    u8g2.setFont(u8g2_font_6x10_tf);
+  if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
+    u8g2.setFont(u8g2_font_6x10_tf); // old font
     u8g2.drawStr(0, 16, "No event / passed");
   } else {
     char buf[48];
-    snprintf(buf, sizeof(buf), "%ldw %ldd %ldh", weeks, days, hours);
-    u8g2.setFont(u8g2_font_7x13_mf);
-    u8g2.drawStr(0, 20, buf);
+    snprintf(buf, sizeof(buf), "%ldw %ldt %lds %ldm", weeks, days, hours, minutes);
+    // u8g2.setFont(u8g2_font_7x13_mf);
+    u8g2.setFont(u8g2_font_10x20_tf);
+    u8g2.drawStr(2, 31, buf);
   }
 
   // blinking overlay

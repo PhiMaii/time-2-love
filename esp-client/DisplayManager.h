@@ -7,7 +7,7 @@ class DisplayManager {
 public:
   DisplayManager();
   void begin();
-  void updateDisplay(long weeks, long days, long hours, int rssi, bool serverUp);
+  void updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp);
   void showTempMessage(const char* msg);
   void startBlinking(unsigned long ms);
 

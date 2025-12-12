@@ -25,17 +25,18 @@ String DEVICE_ID = "";
 void setup() {
   Serial.begin(115200);
 
+  delay(500);
+
   EEPROMManager::begin();
   EEPROMManager::loadOrInitialize();
 
   DEVICE_ID = EEPROMManager::getDeviceId();
   String swVersion = EEPROMManager::getSwVersion();
 
-  Serial.println("Device ID from EEPROM: " + DEVICE_ID);
-  Serial.println("Software Version: " + swVersion);
   Serial.println("######################");
-
-  delay(500);
+  Serial.println("Device ID from EEPROM: " + DEVICE_ID);
+  Serial.println("Software Version from EEPROM: " + swVersion + "\n");
+  Serial.println("######################");
 
   Serial.println();
   Serial.print("Starting device " + DEVICE_ID + "\n");
@@ -140,6 +141,7 @@ void loop() {
     eventClock.getWeeks(),
     eventClock.getDays(),
     eventClock.getHours(),
+    eventClock.getMinutes(),
     WiFi.RSSI(),
     server.isServerReachable()
   );

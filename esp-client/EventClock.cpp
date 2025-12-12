@@ -74,6 +74,14 @@ long EventClock::getHours() {
   return diff / 3600L;
 }
 
+long EventClock::getMinutes(){
+  if (_eventEpoch == 0 || _now == 0) return 0;
+  long diff = _eventEpoch - _now;
+  if (diff <= 0) return 0;
+  diff %= 3600L;
+  return diff / 60L;
+}
+
 bool EventClock::hasEvent() {
   return _eventEpoch != 0;
 }
