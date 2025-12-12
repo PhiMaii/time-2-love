@@ -36,21 +36,23 @@ jobs:
 
       - name: Compile ESP8266 D1 mini sketch
         run: |
+          mkdir -p build
           arduino-cli compile \
-          --fqbn esp8266:esp8266:d1_mini \
-          esp_client
+            --fqbn esp8266:esp8266:d1_mini \
+            --build-path build \
+            esp_client
 
       - name: Read version from Config.h
+        id: ver
         run: |
           VERSION=$(grep -oP '(?<=#define SOFTWARE_VERSION ")[^"]+' esp_client/Config.h)
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
 
       - name: Write version file
         run: |
           mkdir -p build
-          echo "" > build/version.txt
-
+          echo "${{ steps.ver.outputs.version }}" > build/version.txt
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
