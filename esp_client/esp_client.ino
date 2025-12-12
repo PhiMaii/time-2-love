@@ -94,7 +94,7 @@ void loop() {
     String peer = server.getFirstPeer();
     if (peer.length() == 0) {
       Serial.println("No peer available to blink.");
-      displayManager.showTempMessage("No peer");
+      displayManager.showTempMessage("No device");
     } else {
       bool ok = server.triggerBlink(String(DEVICE_ID), peer);
       if (ok) {
@@ -122,7 +122,7 @@ void loop() {
     ServerClient::BlinkInfo info = server.pollBlink(String(DEVICE_ID));
     if (info.blink) {
       Serial.printf("Blink event from %s\n", info.from.c_str());
-      displayManager.startBlinking(3000); // blink for 3s visually
+      displayManager.startBlinking(2000); // blink for 2s visually
       // flash LED quickly
       for (int i = 0; i < 6; ++i) {
         digitalWrite(LED_PIN, LOW); delay(80);

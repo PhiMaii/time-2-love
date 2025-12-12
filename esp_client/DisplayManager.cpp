@@ -59,8 +59,13 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
 
   // if temp message
   if (_tempUntil > millis()) {
-    u8g2.setFont(u8g2_font_6x10_tf);
-    u8g2.drawStr(0, 18, _tempMsg.c_str());
+    // u8g2.setFont(u8g2_font_6x10_tf);
+    u8g2.setFont(u8g2_font_10x20_tf);
+
+    int textWidth = u8g2.getStrWidth(_tempMsg.c_str());
+    int x = (u8g2.getDisplayWidth() - textWidth) / 2;
+
+    u8g2.drawStr(x, 27, _tempMsg.c_str());
     u8g2.sendBuffer();
     return;
   }
@@ -86,8 +91,9 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
       u8g2.setDrawColor(1);
       u8g2.drawBox(0, 0, 128, 32);
       u8g2.setDrawColor(0);
-      u8g2.setFont(u8g2_font_6x10_tf);
-      u8g2.drawStr(36, 18, "BLINK");
+      // u8g2.setFont(u8g2_font_6x10_tf);
+      u8g2.setFont(u8g2_font_10x20_tf);
+      u8g2.drawStr(36, 26, "BLINK");
       u8g2.setDrawColor(1);
     }
   }
