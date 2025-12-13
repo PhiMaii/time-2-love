@@ -15,6 +15,7 @@ ServerClient server;
 EventClock eventClock;
 DisplayManager displayManager;
 ButtonHandler button(BUTTON_PIN);
+EEPROMManager eepromManager;
 
 unsigned long lastEventFetch = 0;
 unsigned long lastBlinkPoll = 0;
@@ -29,11 +30,11 @@ void setup() {
 
   delay(500);
 
-  EEPROMManager::begin();
-  EEPROMManager::loadOrInitialize();
+  eepromManager.begin();
+  eepromManager.loadOrInitialize();
 
-  DEVICE_ID = EEPROMManager::getDeviceId();
-  String swVersion = EEPROMManager::getSwVersion();
+  DEVICE_ID = eepromManager.getDeviceId();
+  String swVersion = eepromManager.getSwVersion();
 
   Serial.println("######################");
   Serial.println("Device ID from EEPROM: " + DEVICE_ID);

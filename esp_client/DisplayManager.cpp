@@ -2,8 +2,6 @@
 #include <U8g2lib.h>
 #include <Wire.h>
 
-#include "Images.h"
-
 // SSD1306 128x32 I2C constructor
 static U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
 
