@@ -8,6 +8,7 @@
 #include "DisplayManager.h"
 #include "ButtonHandler.h"
 #include "EEPROMManager.h"
+#include "OTAManager.h"
 
 
 // Globals
@@ -16,12 +17,15 @@ EventClock eventClock;
 DisplayManager displayManager;
 ButtonHandler button(BUTTON_PIN);
 EEPROMManager eepromManager;
+OTAManager otaManager;
 
 unsigned long lastEventFetch = 0;
 unsigned long lastBlinkPoll = 0;
 unsigned long lastRegister = 0;
+unsigned long lastOTACheck = 0;
 
-String DEVICE_ID = "";
+String DEVICE_ID_FROM_EEPROM = "";
+String SW_VERSION_FROM_EEPROM = "";
 
 void setup() {
   delay(100);
@@ -33,16 +37,16 @@ void setup() {
   eepromManager.begin();
   eepromManager.loadOrInitialize();
 
-  DEVICE_ID = eepromManager.getDeviceId();
-  String swVersion = eepromManager.getSwVersion();
+  DEVICE_ID_FROM_EEPROM = eepromManager.getDeviceId();
+  SW_VERSION_FROM_EEPROM = eepromManager.getSwVersion();
 
   Serial.println("######################");
-  Serial.println("Device ID from EEPROM: " + DEVICE_ID);
-  Serial.println("Software Version from EEPROM: " + swVersion + "\n");
+  Serial.println("Device ID from EEPROM: " + DEVICE_ID_FROM_EEPROM);
+  Serial.println("Software Version from EEPROM: " + SW_VERSION_FROM_EEPROM + "\n");
   Serial.println("######################");
 
   Serial.println();
-  Serial.print("Starting device " + DEVICE_ID + "\n");
+  Serial.print("Starting device " + DEVICE_ID_FROM_EEPROM + "\n");
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // builtin LED active LOW on many boards
@@ -71,18 +75,23 @@ void setup() {
   }
 
   server.begin(SERVER_URL);
-  server.registerDevice(String(DEVICE_ID));
+  server.registerDevice(String(DEVICE_ID_FROM_EEPROM));
 
   eventClock.fetchEventFromServer();
 
   lastEventFetch = millis();
   lastBlinkPoll = millis();
   lastRegister = millis();
+  lastOTACheck = millis();
 
   button.begin();
 
+  otaManager.begin(DEVICE_ID_FROM_EEPROM, SW_VERSION_FROM_EEPROM);
+
   displayManager.showTempMessage("Ready");
   delay(600);
+
+  otaManager.checkForUpdate();
 }
 
 void loop() {
@@ -97,7 +106,7 @@ void loop() {
       Serial.println("No peer available to blink.");
       displayManager.showTempMessage("No device");
     } else {
-      bool ok = server.triggerBlink(String(DEVICE_ID), peer);
+      bool ok = server.triggerBlink(String(DEVICE_ID_FROM_EEPROM), peer);
       if (ok) {
         Serial.printf("Sent blink -> %s\n", peer.c_str());
         displayManager.showTempMessage("Blink sent");
@@ -108,19 +117,16 @@ void loop() {
     }
   }
 
-  // Periodic re-register
+  // ===== Periodic re-register =====
   if (now - lastRegister >= REGISTER_INTERVAL) {
     lastRegister = now;
-    server.registerDevice(String(DEVICE_ID));
+    server.registerDevice(String(DEVICE_ID_FROM_EEPROM));
   }
 
-  // Poll blink events
+  // ===== Poll blink events ======
   if (now - lastBlinkPoll >= BLINK_POLL_INTERVAL) {
-
-    // Serial.println(WiFi.RSSI());
-
     lastBlinkPoll = now;
-    ServerClient::BlinkInfo info = server.pollBlink(String(DEVICE_ID));
+    ServerClient::BlinkInfo info = server.pollBlink(String(DEVICE_ID_FROM_EEPROM));
     if (info.blink) {
       Serial.printf("Blink event from %s\n", info.from.c_str());
       displayManager.startBlinking(2000); // blink for 2s visually
@@ -132,13 +138,19 @@ void loop() {
     }
   }
 
-  // Periodic event fetch
+  // ===== Periodic event fetch =====
   if (now - lastEventFetch >= EVENT_FETCH_INTERVAL) {
     lastEventFetch = now;
     eventClock.fetchEventFromServer();
   }
 
-  // Update clock/time, then display
+  // ===== Periodic OTA Update check =====
+  // if (now - lastOTACheck >= OTA_CHECK_INTERVAL){
+  //   lastOTACheck = now;
+  //   otaManager.sendAlive();
+  // }
+
+  // ========== MAIN UPDATE LOOP ==========
   eventClock.update();
   displayManager.updateDisplay(
     eventClock.getWeeks(),
