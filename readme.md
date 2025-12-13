@@ -7,6 +7,17 @@ The device is designed to be housed in a **3D-printed enclosure** and supports *
 
 ---
 
+## TO-DOs:
+
+- Make ther server use NEXT.js
+- use Websockets for instant blink responses
+- Devices send heartbeats to track online status from the dashboard
+- latency charts on dashboard
+- custom OTA server
+- remote configuration (and management) of the devices 
+
+---
+
 ## ✨ Features
 
 - ⏳ Countdown to a fixed event date (weeks / days / hours)
