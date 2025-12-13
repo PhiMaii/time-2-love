@@ -18,6 +18,7 @@ public:
   static void loadOrInitialize();
   static String getDeviceId();
   static String getSwVersion();
+  static void setSwVersion(const String& version);
 
 private:
   static String readString(int addr, int maxLen);

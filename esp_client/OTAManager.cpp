@@ -1,8 +1,10 @@
 #include <string>
-#include "OTAManager.h"
-
 #include <ESP8266WiFi.h>
 #include <otadrive_esp.h>
+
+#include "EEPROMManager.h"
+#include "OTAManager.h"
+#include "DisplayManager.h"
 
 #include "Config.h"
 
@@ -16,6 +18,7 @@ void OTAManager::begin(String deviceID, String SwVersion) {
 
     OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
     // OTADRIVE.onUpdateFirmwareProgress(onUpdateProgress);
+    OTADRIVE.onUpdateFirmwareProgress(DisplayManager::displayUpdateProgress);
 
     Serial.println("[OTA] Device ID: " + deviceID);
     Serial.println("[OTA] Firmware Version: " + SwVersion);
@@ -36,8 +39,16 @@ void OTAManager::checkForUpdate() {
 
     Serial.println(inf);
 
-    // Serial.println("asldkjföalskdfj");
+    if(inf.available){
+      Serial.printf("Updating to: %s", inf.version.c_str());
 
-    // auto r = OTADRIVE.updateFirmware(false);
-    // Serial.printf("[OTA] Update result is: %s\n", r.toString().c_str());
+      OTADRIVE.updateFirmware(false);
+
+      Serial.println(String(OTA_PREFIX) + "Update successful!");
+      Serial.println(String(OTA_PREFIX) + "Writing new version to EEPROM ...");
+
+      EEPROMManager::setSwVersion(inf.version.c_str());
+
+      ESP.restart();
+    }
 }

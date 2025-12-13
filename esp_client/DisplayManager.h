@@ -10,6 +10,7 @@ public:
   void updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp);
   void showTempMessage(const char* msg);
   void startBlinking(unsigned long ms);
+  static void displayUpdateProgress(int progress, int total);
 
 private:
   unsigned long _blinkUntil;

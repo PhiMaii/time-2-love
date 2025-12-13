@@ -49,3 +49,7 @@ void EEPROMManager::writeString(int addr, int maxLen, const String& s) {
     EEPROM.write(addr + i, c);
   }
 }
+
+void EEPROMManager::setSwVersion(const String& version){
+  writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, version.c_str());
+}

@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "DisplayManager.h"
 #include <U8g2lib.h>
 #include <Wire.h>
@@ -97,4 +98,25 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
   }
 
   u8g2.sendBuffer();
+}
+
+void DisplayManager::displayUpdateProgress(int progress, int total){
+  String oldVersion = "0.1.0";
+  String newVersion = "0.1.2";
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tf);
+  int progressPercent = (100 * progress) / total;
+
+  char progress_buf[48];
+  snprintf(progress_buf, sizeof(progress_buf), "%i/%i  %i%", progress, total, progressPercent);
+
+  char version_buf[48];
+  snprintf(version_buf, sizeof(version_buf), "%s -> %s", oldVersion, newVersion);
+
+  u8g2.drawStr(10, 10, "Updating FW ...");
+  u8g2.drawStr(10, 30, version_buf);
+  u8g2.drawStr(10, 20, progress_buf);
+
+  u8g2.sendBuffer();  
 }
