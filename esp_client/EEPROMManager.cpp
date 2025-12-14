@@ -1,4 +1,5 @@
 #include "EEPROMManager.h"
+#include "Config.h"
 
 static String _deviceId;
 static String _swVersion;
@@ -23,16 +24,20 @@ void EEPROMManager::loadOrInitialize() {
   }
 
   // Load values
-  _deviceId   = readString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN);
-  _swVersion  = readString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN);
+  _deviceId = readString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN);
+  _swVersion = readString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN);
 
   // Serial.println("[EEPROM] Loaded:");
   // Serial.println("  Device ID: " + _deviceId);
   // Serial.println("  SW Version: " + _swVersion);
 }
 
-String EEPROMManager::getDeviceId() { return _deviceId; }
-String EEPROMManager::getSwVersion() { return _swVersion; }
+String EEPROMManager::getDeviceId() {
+  return _deviceId;
+}
+String EEPROMManager::getSwVersion() {
+  return _swVersion;
+}
 
 String EEPROMManager::readString(int addr, int maxLen) {
   char buf[maxLen + 1];
@@ -44,8 +49,15 @@ String EEPROMManager::readString(int addr, int maxLen) {
 }
 
 void EEPROMManager::writeString(int addr, int maxLen, const String& s) {
+  Serial.println(String(EEPROM_PREFIX) + "Writing to EEPROM ...");
   for (int i = 0; i < maxLen; i++) {
     char c = (i < s.length()) ? s[i] : 0;
     EEPROM.write(addr + i, c);
   }
+  Serial.println(String(EEPROM_PREFIX) + "Success!");
+}
+
+void EEPROMManager::setSwVersion(const String& version) {
+  writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, version.c_str());
+  EEPROM.commit();
 }

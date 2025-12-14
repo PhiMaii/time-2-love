@@ -122,7 +122,7 @@ ServerClient::BlinkInfo ServerClient::pollBlink(const String& device) {
           // simpler approach:
           int needle = resp.indexOf("\"from\":\"");
           if (needle >= 0) {
-            int vs = needle + 8 + 1; // after "from":"
+            int vs = needle + 8 + 1;  // after "from":"
             int ve = resp.indexOf('"', vs);
             if (ve > vs) {
               info.from = resp.substring(vs, ve);
@@ -142,14 +142,14 @@ String ServerClient::getFirstPeer() {
 }
 
 bool ServerClient::isServerReachable() {
-  if (WiFi.status() != WL_CONNECTED){
+  if (WiFi.status() != WL_CONNECTED) {
     _lastPingState = false;
     return false;
-  } 
-  if (millis() - _lastPing < 5000){
+  }
+  if (millis() - _lastPing < 5000) {
     // Serial.println("#### online bc avoid spam!");
-    return _lastPingState; // avoid spamming
-  } 
+    return _lastPingState;  // avoid spamming
+  }
 
   _lastPing = millis();
 
@@ -160,10 +160,10 @@ bool ServerClient::isServerReachable() {
   int code = http.GET();
   http.end();
   // Serial.println(code);
-  if(code == 200){
+  if (code == 200) {
     _lastPingState = true;
     return true;
-  }else{
+  } else {
     _lastPingState = false;
     return false;
   }
