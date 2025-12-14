@@ -9,7 +9,8 @@ public:
     bool blink;
     String from;
     long ts;
-    BlinkInfo(): blink(false), from(""), ts(0) {}
+    BlinkInfo()
+      : blink(false), from(""), ts(0) {}
   };
 
   ServerClient();

@@ -100,7 +100,7 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
   u8g2.sendBuffer();
 }
 
-void DisplayManager::displayUpdateProgress(int progress, int total){
+void DisplayManager::displayUpdateProgress(int progress, int total) {
   String oldVersion = "0.1.0";
   String newVersion = "0.1.2";
 
@@ -118,5 +118,5 @@ void DisplayManager::displayUpdateProgress(int progress, int total){
   u8g2.drawStr(10, 30, version_buf);
   u8g2.drawStr(10, 20, progress_buf);
 
-  u8g2.sendBuffer();  
+  u8g2.sendBuffer();
 }

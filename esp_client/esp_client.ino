@@ -29,7 +29,7 @@ String SW_VERSION_FROM_EEPROM = "";
 
 void setup() {
   delay(100);
-  
+
   Serial.begin(115200);
 
   delay(500);
@@ -49,7 +49,7 @@ void setup() {
   Serial.print("Starting device " + DEVICE_ID_FROM_EEPROM + "\n");
 
   pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, HIGH); // builtin LED active LOW on many boards
+  digitalWrite(LED_PIN, HIGH);  // builtin LED active LOW on many boards
 
   displayManager.begin();
   displayManager.showTempMessage("Booting...");
@@ -129,11 +129,13 @@ void loop() {
     ServerClient::BlinkInfo info = server.pollBlink(String(DEVICE_ID_FROM_EEPROM));
     if (info.blink) {
       Serial.printf("Blink event from %s\n", info.from.c_str());
-      displayManager.startBlinking(2000); // blink for 2s visually
+      displayManager.startBlinking(2000);  // blink for 2s visually
       // flash LED quickly
       for (int i = 0; i < 6; ++i) {
-        digitalWrite(LED_PIN, LOW); delay(80);
-        digitalWrite(LED_PIN, HIGH); delay(80);
+        digitalWrite(LED_PIN, LOW);
+        delay(80);
+        digitalWrite(LED_PIN, HIGH);
+        delay(80);
       }
     }
   }
@@ -158,8 +160,7 @@ void loop() {
     eventClock.getHours(),
     eventClock.getMinutes(),
     WiFi.RSSI(),
-    server.isServerReachable()
-  );
+    server.isServerReachable());
 
   delay(20);
 }

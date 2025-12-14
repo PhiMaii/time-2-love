@@ -3,10 +3,10 @@
 
 class OTAManager {
 public:
-    static void begin(String deviceID, String swVersion);
-    static bool sendAlive();
-    static void checkForUpdate();
+  static void begin(String deviceID, String swVersion);
+  static bool sendAlive();
+  static void checkForUpdate();
 
 private:
-    static unsigned long _lastCheck;
+  static unsigned long _lastCheck;
 };

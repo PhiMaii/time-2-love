@@ -10,45 +10,47 @@
 
 unsigned long OTAManager::_lastCheck = 0;
 
-// Check every 10 minutes
-// static const unsigned long OTA_CHECK_INTERVAL = 10UL * 60UL * 1000UL;
+String NEW_FW_VERSION = "";
+
 
 void OTAManager::begin(String deviceID, String SwVersion) {
-    Serial.println("[OTA] Initializing OTAdrive");
+  Serial.println("[OTA] Initializing OTAdrive");
 
-    OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
-    // OTADRIVE.onUpdateFirmwareProgress(onUpdateProgress);
-    OTADRIVE.onUpdateFirmwareProgress(DisplayManager::displayUpdateProgress);
+  OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
+  // OTADRIVE.onUpdateFirmwareProgress(onUpdateProgress);
+  OTADRIVE.onUpdateFirmwareProgress(DisplayManager::displayUpdateProgress);
 
-    Serial.println("[OTA] Device ID: " + deviceID);
-    Serial.println("[OTA] Firmware Version: " + SwVersion);
+  Serial.println("[OTA] Device ID: " + deviceID);
+  Serial.println("[OTA] Firmware Version: " + SwVersion);
 }
 
-bool OTAManager::sendAlive(){
-  if(DEBUG_MODE) Serial.println(String(OTA_PREFIX) + "Sending alive-packet");
+bool OTAManager::sendAlive() {
+  if (DEBUG_MODE) Serial.println(String(OTA_PREFIX) + "Sending alive-packet");
   // return OTADRIVE.sendAlive();
   return true;
 }
 
 void OTAManager::checkForUpdate() {
-    if (WiFi.status() != WL_CONNECTED) return;
+  if (WiFi.status() != WL_CONNECTED) return;
 
-    Serial.println(String(OTA_PREFIX) + "Checking for firmware update...");
+  Serial.println(String(OTA_PREFIX) + "Checking for firmware update...");
 
-    auto inf = OTADRIVE.updateFirmwareInfo();
+  auto inf = OTADRIVE.updateFirmwareInfo();
 
-    Serial.println(inf);
+  Serial.println(inf);
 
-    if(inf.available){
-      Serial.printf("Updating to: %s", inf.version.c_str());
+  if (inf.available) {
 
-      OTADRIVE.updateFirmware(false);
+    NEW_FW_VERSION = inf.version.c_str();
+    Serial.printf("Updating to: %s", NEW_FW_VERSION);
 
-      Serial.println(String(OTA_PREFIX) + "Update successful!");
-      Serial.println(String(OTA_PREFIX) + "Writing new version to EEPROM ...");
+    OTADRIVE.updateFirmware(false);
 
-      EEPROMManager::setSwVersion(inf.version.c_str());
+    Serial.println(String(OTA_PREFIX) + "Update successful!");
+    Serial.println(String(OTA_PREFIX) + "Writing new version to EEPROM ...");
 
-      ESP.restart();
-    }
+    EEPROMManager::setSwVersion(inf.version.c_str());
+
+    ESP.restart();
+  }
 }
