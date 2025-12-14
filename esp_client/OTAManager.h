@@ -3,10 +3,14 @@
 
 class OTAManager {
 public:
-  static void begin(String deviceID, String swVersion);
-  static bool sendAlive();
-  static void checkForUpdate();
+    OTAManager();
+    static void begin(String deviceID, String swVersion);
+    static bool sendAlive();
+    static void checkForUpdate();
+    static void downloadUpdate();
+    static const char* getNewSwVersion();  // static + const char*
 
 private:
-  static unsigned long _lastCheck;
+    static String _newSwVersion;     // Add static!
+    static unsigned long _lastCheck; // Add static!
 };

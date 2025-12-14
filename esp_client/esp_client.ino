@@ -10,7 +10,6 @@
 #include "EEPROMManager.h"
 #include "OTAManager.h"
 
-
 // Globals
 ServerClient server;
 EventClock eventClock;
@@ -101,6 +100,7 @@ void loop() {
   button.loop();
   if (button.wasPressed()) {
     Serial.println("Button pressed -> trigger blink");
+    otaManager.checkForUpdate();
     String peer = server.getFirstPeer();
     if (peer.length() == 0) {
       Serial.println("No peer available to blink.");
