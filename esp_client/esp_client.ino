@@ -90,7 +90,8 @@ void setup() {
   displayManager.showTempMessage("Ready");
   delay(600);
 
-  // otaManager.checkForUpdate();
+  // if(otaManager.checkForUpdate()) otaManager.downloadUpdate();
+  otaManager.checkForUpdate();
 }
 
 void loop() {
@@ -100,7 +101,6 @@ void loop() {
   button.loop();
   if (button.wasPressed()) {
     Serial.println("Button pressed -> trigger blink");
-    otaManager.checkForUpdate();
     String peer = server.getFirstPeer();
     if (peer.length() == 0) {
       Serial.println("No peer available to blink.");

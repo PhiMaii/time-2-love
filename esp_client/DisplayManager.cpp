@@ -3,6 +3,10 @@
 #include "DisplayManager.h"
 #include <U8g2lib.h>
 #include <Wire.h>
+#include "OTAManager.h"
+
+#include <avr/pgmspace.h>
+
 
 // SSD1306 128x32 I2C constructor
 static U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
@@ -18,7 +22,7 @@ void DisplayManager::begin() {
   u8g2.begin();
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.drawStr(0, 10, "Init...");
+  u8g2.drawStr(0, 10, "Init... v0.1.2");
   // u8g2.drawBitmap(0, 0, STARTUP_SCREEN_INVERTED_WIDTH, STARTUP_SCREEN_INVERTED_HEIGHT, startup_screen_inverted);
   u8g2.sendBuffer();
 }
@@ -106,8 +110,21 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
   for (int i = 0; i < bars; ++i) {
     int x = 2 + i * 3;
     int h = 3 + i * 2;
-    u8g2.drawBox(x, 0 + (10 - h), 2, h);
+    u8g2.drawBox(x, (10 - h), 2, h);
   }
+
+  u8g2.setFont(u8g2_font_6x10_tf);
+  // char buf[48];
+  const char* version = OTAManager::getCurrentSwVersion();
+  // snprintf(buf, sizeof(buf), "v%c", version);
+  int textWidth = u8g2.getStrWidth(version);
+  int x = (u8g2.getDisplayWidth() - textWidth) / 2;
+  u8g2.drawStr(x + 5, 10, version);
+
+  // static const unsigned char PROGMEM update_icon[] = { 0x40, 0x0, 0xe2, 0x5f, 0x20, 0x41, 0x26, 0x48, 0xa0, 0x7f, 0x4, 0x20, 0x0 };
+  // u8g2.drawXBMP(80, 11, 10, 10, update_icon);
+  if(OTAManager::getNewSwVersion() != "null") u8g2.drawDisc(x - 5, 5, 3);
+  // else u8g2.drawCircle(x - 5, 5, 3);
 
   if (serverUp) u8g2.drawBox(120, 2, 6, 6);
   else u8g2.drawFrame(120, 2, 6, 6);
