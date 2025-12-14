@@ -3,8 +3,6 @@
 **Time2Love** is a small, WiFi-connected countdown device built with an ESP8266 and an OLED display.  
 It shows the remaining time until a meaningful event (e.g. the next time two people see each other) and allows two paired devices to communicate through a simple server — including a remote “blink” signal.
 
-The device is designed to be housed in a **3D-printed enclosure** and supports **OTA firmware updates**.
-
 ---
 
 ## TO-DOs:
@@ -28,7 +26,6 @@ The device is designed to be housed in a **3D-printed enclosure** and supports *
 - ☁️ Simple Node.js server for pairing & messaging
 - 💾 Persistent configuration via EEPROM
 - 🔄 OTA firmware updates via **OTAdrive**
-- 🧪 Serial debug output for development
 
 ---
 
@@ -37,9 +34,6 @@ The device is designed to be housed in a **3D-printed enclosure** and supports *
 - Wemos D1 Mini (ESP8266) or compatible clone
 - 128×32 OLED display (SSD1306, I2C)
 - Push button
-- Optional LED (for blink indication)
-- WiFi network
-- 3D-printed enclosure
 
 ---
 
@@ -107,40 +101,15 @@ The device is designed to be housed in a **3D-printed enclosure** and supports *
 
 The EEPROM is used for **persistent configuration**:
 
-| Key        | Description                    |
-|-----------|--------------------------------|
-| Device ID | Unique identifier per device   |
-| Version   | Current firmware version       |
+| Name        | Description                    | Start Addr | Length |
+|-----------|--------------------------------|---------|-----|
+| Magic bit | Shows if the EEPROM has been written to before   |0|1|
+| Device ID   | Unique device ID       |1|32|
+|SF Version| The current firmware version of the device|33|32|
+|SSID|SSID of a stored WiFi network | 65| 32|
+|WiFi Password| Password for the stored WiFi network | 97|64|
 
 EEPROM is initialized on first boot and reused on every restart.
+Total EEPROM size is 256.
 
 ---
-
-## 🔄 OTA Firmware Updates
-
-OTA updates are handled using **OTAdrive**.
-
-### Requirements
-- OTAdrive account
-- API key
-- Internet access
-
-### Behavior
-- Device reports its `DEVICE_ID` and `SW_VERSION`
-- Checks periodically for new firmware
-- Automatically downloads and applies updates
-- Reboots after successful update
-
----
-
-## ⚙️ Configuration
-
-Edit `Config.h`:
-
-```cpp
-#define WIFI_SSID "your-ssid"
-#define WIFI_PASSWORD "your-password"
-
-#define SERVER_URL "http://192.168.0.10:3000"
-
-#define OTADRIVE_APIKEY "your-otadrive-api-key"
