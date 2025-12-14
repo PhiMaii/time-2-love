@@ -91,7 +91,7 @@ void setup() {
   displayManager.showTempMessage("Ready");
   delay(600);
 
-  otaManager.checkForUpdate();
+  // otaManager.checkForUpdate();
 }
 
 void loop() {
