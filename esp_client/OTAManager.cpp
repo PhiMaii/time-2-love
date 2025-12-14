@@ -18,7 +18,7 @@ void OTAManager::begin(String deviceID, String SwVersion) {
 
   OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
   // OTADRIVE.onUpdateFirmwareProgress(onUpdateProgress);
-  OTADRIVE.onUpdateFirmwareProgress(DisplayManager::displayUpdateProgress);
+  // OTADRIVE.onUpdateFirmwareProgress(DisplayManager::displayUpdateProgress);
 
   Serial.println("[OTA] Device ID: " + deviceID);
   Serial.println("[OTA] Firmware Version: " + SwVersion);
