@@ -1,3 +1,5 @@
+#include "WString.h"
+#include "EEPROMManager.h"
 #include "core_esp8266_features.h"
 #include <cstdio>
 #include "DisplayManager.h"
@@ -115,11 +117,11 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
 
   u8g2.setFont(u8g2_font_6x10_tf);
   // char buf[48];
-  const char* version = OTAManager::getCurrentSwVersion();
+  const String version = EEPROMManager::getSwVersion();
   // snprintf(buf, sizeof(buf), "v%c", version);
-  int textWidth = u8g2.getStrWidth(version);
+  int textWidth = u8g2.getStrWidth(version.c_str());
   int x = (u8g2.getDisplayWidth() - textWidth) / 2;
-  u8g2.drawStr(x + 5, 10, version);
+  u8g2.drawStr(x + 5, 10, version.c_str());
 
   // static const unsigned char PROGMEM update_icon[] = { 0x40, 0x0, 0xe2, 0x5f, 0x20, 0x41, 0x26, 0x48, 0xa0, 0x7f, 0x4, 0x20, 0x0 };
   // u8g2.drawXBMP(80, 11, 10, 10, update_icon);

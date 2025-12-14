@@ -11,7 +11,7 @@
 
 // Static member definitions (REQUIRED!)
 String OTAManager::_newSwVersion = "null";
-String OTAManager::_currentSwVersion = "null";
+// String OTAManager::_currentSwVersion = "null";
 unsigned long OTAManager::_lastCheck = 0;
 
 OTAManager::OTAManager() {
@@ -19,8 +19,6 @@ OTAManager::OTAManager() {
 }
 
 void OTAManager::begin(String deviceID, String SwVersion) {
-  OTAManager::_currentSwVersion = SwVersion;
-
   Serial.println("[OTA] Initializing OTAdrive");
 
   OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
@@ -34,10 +32,6 @@ void OTAManager::begin(String deviceID, String SwVersion) {
 // Non-static function with RETURN statement
 const char* OTAManager::getNewSwVersion() {  // NO static here!
   return OTAManager::_newSwVersion.c_str();  // Fully qualified name
-}
-
-const char* OTAManager::getCurrentSwVersion(){
-  return OTAManager::_currentSwVersion.c_str();
 }
 
 bool OTAManager::sendAlive() {

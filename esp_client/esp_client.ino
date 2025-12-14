@@ -9,6 +9,7 @@
 #include "ButtonHandler.h"
 #include "EEPROMManager.h"
 #include "OTAManager.h"
+#include "WiFiManager.h"
 
 // Globals
 ServerClient server;
@@ -17,6 +18,7 @@ DisplayManager displayManager;
 ButtonHandler button(BUTTON_PIN);
 EEPROMManager eepromManager;
 OTAManager otaManager;
+WiFiManager wifiManager;
 
 unsigned long lastEventFetch = 0;
 unsigned long lastBlinkPoll = 0;
@@ -39,10 +41,10 @@ void setup() {
   DEVICE_ID_FROM_EEPROM = eepromManager.getDeviceId();
   SW_VERSION_FROM_EEPROM = eepromManager.getSwVersion();
 
-  Serial.println("######################");
-  Serial.println("Device ID from EEPROM: " + DEVICE_ID_FROM_EEPROM);
-  Serial.println("Software Version from EEPROM: " + SW_VERSION_FROM_EEPROM + "\n");
-  Serial.println("######################");
+  // Serial.println("######################");
+  // Serial.println("Device ID from EEPROM: " + DEVICE_ID_FROM_EEPROM);
+  // Serial.println("Software Version from EEPROM: " + SW_VERSION_FROM_EEPROM + "\n");
+  // Serial.println("######################");
 
   Serial.println();
   Serial.print("Starting device " + DEVICE_ID_FROM_EEPROM + "\n");
@@ -54,24 +56,26 @@ void setup() {
   displayManager.showTempMessage("Booting...");
 
   // WiFi
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  Serial.print("Connecting to WiFi");
-  unsigned long start = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - start < 15000) {
-    delay(250);
-    Serial.print(".");
-  }
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.println();
-    Serial.printf("WiFi connected, IP: %s\n", WiFi.localIP().toString().c_str());
-    // NTP
-    configTime(0, 0, "pool.ntp.org", "time.google.com");
-    Serial.println("NTP configured");
-  } else {
-    Serial.println();
-    Serial.println("WiFi connection failed (timeout)");
-  }
+  wifiManager.begin();
+  // WiFi.mode(WIFI_STA);
+  // WiFi.begin(WIFI_SSID, WIFI_PASS);
+  // Serial.print("Connecting to WiFi");
+  // unsigned long start = millis();
+  // while (WiFi.status() != WL_CONNECTED && millis() - start < 15000) {
+  //   delay(250);
+  //   Serial.print(".");
+  // }
+  // if (WiFi.status() == WL_CONNECTED) {
+  //   Serial.println();
+  //   Serial.printf("WiFi connected, IP: %s\n", WiFi.localIP().toString().c_str());
+  // NTP
+  configTime(0, 0, "pool.ntp.org", "time.google.com");
+  Serial.println("NTP configured");
+  // }
+  // else {
+  //   Serial.println();
+  //   Serial.println("WiFi connection failed (timeout)");
+  // }
 
   server.begin(SERVER_URL);
   server.registerDevice(String(DEVICE_ID_FROM_EEPROM));
@@ -161,6 +165,8 @@ void loop() {
     eventClock.getMinutes(),
     WiFi.RSSI(),
     server.isServerReachable());
+
+  wifiManager.loop();
 
   delay(20);
 }
