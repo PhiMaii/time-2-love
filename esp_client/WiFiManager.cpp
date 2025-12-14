@@ -3,6 +3,9 @@
 #include "EEPROMManager.h"
 #include "Config.h"
 
+#include <DNSServer.h>
+
+
 WiFiManager::WiFiManager()
   : server(80) {}
 
@@ -47,11 +50,39 @@ bool WiFiManager::connectWiFi(const String& ssid, const String& password) {
 
 
 void WiFiManager::startAP() {
-  Serial.println("[WIFI] Starting own AP ...");
+  Serial.println("[WIFI] Switching to AP mode");
   WiFi.mode(WIFI_AP);
-  WiFi.softAP("Time2Love-SETUP");
+
+  bool apResult = WiFi.softAP("Time2Love-SETUP");
+  if (apResult) {
+    Serial.println("[WIFI] AP started: Time2Love-SETUP");
+    Serial.print("[WIFI] AP IP: ");
+    Serial.println(WiFi.softAPIP());
+  } else {
+    Serial.println("[WIFI] Failed to start AP");
+  }
+
+  // dnsServer.start(53, "*", WiFi.softAPIP());
+  // Serial.println("[WIFI] DNS server started (Captive Portal active)");
+
+  // server.onNotFound([this]() {
+  //   server.sendHeader("Location", String("http://") + WiFi.softAPIP().toString(), true);
+  //   server.send(302, "text/plain", "");
+  // });
+
+  // server.on("/hotspot-detect.html", [this]() {
+  //   Serial.println("[WiFiManager] iOS captive check");
+  //   server.send(200, "text/html",
+  //               "<!DOCTYPE html>"
+  //               "<html><head>"
+  //               "<meta http-equiv='refresh' content='0; url=/' />"
+  //               "</head><body>"
+  //               "Redirecting..."
+  //               "</body></html>");
+  // });
 
   server.on("/", [this]() {
+    Serial.println("[WIFI] Client connected to captive portal");
     server.send(200, "text/html",
                 "<h2>WiFi Setup</h2>"
                 "<form action='/save'>"
@@ -65,16 +96,20 @@ void WiFiManager::startAP() {
     String ssid = server.arg("s");
     String pass = server.arg("p");
 
-    EEPROMManager::setSsid(ssid);
     EEPROMManager::setWiFiPassword(pass);
+    EEPROMManager::setSsid(ssid);
 
-    server.send(200, "text/html",
-                "Gespeichert. Neustart...");
+    Serial.print("[WIFI] Saving new SSID: ");
+    Serial.println(ssid);
 
+
+    server.send(200, "text/html", "Gespeichert. Neustart...");
+
+    Serial.println("[WIFI] Credentials saved, restarting...");
     delay(1000);
-    // ESP.restart();
+    ESP.restart();
   });
 
   server.begin();
-  Serial.println(String(WIFI_PREFIX) + "AP gestartet: Time2Love-SETUP");
+  Serial.println("[WIFI] Web server started");
 }

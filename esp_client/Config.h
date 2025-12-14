@@ -40,7 +40,7 @@
 // ===== EEPROM Layout =====
 #define EEPROM_SIZE 256
 #define EEPROM_MAGIC_ADDR 0
-#define EEPROM_MAGIC_VAL 0x69
+#define EEPROM_MAGIC_VAL 0x42
 
 // Device id
 #define EEPROM_DEVICE_ID_ADDR 1

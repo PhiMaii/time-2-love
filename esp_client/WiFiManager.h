@@ -4,19 +4,22 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <EEPROM.h>
+#include <DNSServer.h>
+
 
 class WiFiManager {
-  public:
-    WiFiManager();
-    void begin();
-    void loop();
+public:
+  WiFiManager();
+  void begin();
+  void loop();
 
-  private:
-    ESP8266WebServer server;
+private:
+  ESP8266WebServer server;
+  DNSServer dnsServer;  // ✅ DAS FEHLTE
 
-    void startAP();
-    bool connectWiFi(const String& ssid, const String& password);
+
+  void startAP();
+  bool connectWiFi(const String& ssid, const String& password);
 };
 
 #endif
