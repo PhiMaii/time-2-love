@@ -27,16 +27,29 @@
 #define SERVER_URL "http://192.168.178.153:3000"  // change to your server IP:port
 
 // ===== Pins =====
-#define BLINK_BUTTON_PIN D5        //  a safe pin
+#define BLINK_BUTTON_PIN D5  //  a safe pin
 #define SLEEP_BUTTON_PIN D6
+
 #define LED_PIN LED_BUILTIN  // onboard LED
 
+#define LED_STRIP_PIN D7
+#define NUM_LEDS 3
+
+// ===== Heartbeat setup =====
+#define HB_UP_TIME_MS 60
+#define HB_DOWN_TIME_MS 80
+#define HB_HOLD_TIME_MS 20
+#define HB_BETWEEN_BEATS_MS 80
+#define HB_REST_AFTER_MS 250
+
+#define HB_STEP_SIZE 16  // Brightness step per update (0–255)
+
 // ===== Intervals (ms) =====
-#define EVENT_FETCH_INTERVAL 60UL * 1000UL     // 60s
-#define BLINK_POLL_INTERVAL 1UL * 1000UL       // 1s
-#define REGISTER_INTERVAL 5UL * 60UL * 1000UL  // 5min
+#define EVENT_FETCH_INTERVAL 60UL * 1000UL       // 60s
+#define BLINK_POLL_INTERVAL 1UL * 1000UL         // 1s
+#define REGISTER_INTERVAL 5UL * 60UL * 1000UL    // 5min
 #define OTA_CHECK_INTERVAL 60UL * 60UL * 1000UL  // 1 h
-#define DEBUG_INTERVAL 10UL * 1000UL  // 5s
+#define DEBUG_INTERVAL 10UL * 1000UL             // 5s
 
 #define SLEEP_INTERVAL 10UL * 1000UL
 

@@ -12,6 +12,7 @@
 #include "EEPROMManager.h"
 #include "OTAManager.h"
 #include "WiFiManager.h"
+#include "LEDManager.h"
 
 // Globals
 ServerClient server;
@@ -20,6 +21,7 @@ DisplayManager displayManager;
 
 ButtonHandler blinkButton(BLINK_BUTTON_PIN);
 ButtonHandler sleepButton(SLEEP_BUTTON_PIN);
+LEDManager ledManager(NUM_LEDS, LED_STRIP_PIN);
 
 EEPROMManager eepromManager;
 OTAManager otaManager;
@@ -75,6 +77,7 @@ void setup() {
 
   blinkButton.begin();
   sleepButton.begin();
+  ledManager.begin();
 
   otaManager.begin(DEVICE_ID_FROM_EEPROM, SW_VERSION_FROM_EEPROM);
 
@@ -134,14 +137,15 @@ void loop() {
     ServerClient::BlinkInfo info = server.pollBlink(String(DEVICE_ID_FROM_EEPROM));
     if (info.blink) {
       Serial.printf("Blink event from %s\n", info.from.c_str());
+      ledManager.startHeartbeat();
       displayManager.startBlinking(2000);  // blink for 2s visually
       // flash LED quickly
-      for (int i = 0; i < 6; ++i) {
-        digitalWrite(LED_PIN, LOW);
-        delay(80);
-        digitalWrite(LED_PIN, HIGH);
-        delay(80);
-      }
+      // for (int i = 0; i < 6; ++i) {
+      //   digitalWrite(LED_PIN, LOW);
+      //   delay(80);
+      //   digitalWrite(LED_PIN, HIGH);
+      //   delay(80);
+      // }
     }
   }
 
@@ -168,6 +172,7 @@ void loop() {
     server.isServerReachable());
 
   wifiManager.loop();
+  ledManager.loop();
 
   delay(20);
 }
