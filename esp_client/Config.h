@@ -4,7 +4,7 @@
 #define CONFIG_H
 
 // ===== Device Infos =====
-// #define SOFTWARE_VERSION "0.1.2" -> just used for Github actions - Moved to EEPROM
+// #define SOFTWARE_VERSION "0.1.3" -> just used for Github actions - Moved to EEPROM
 // #define DEVICE_ID "time2love-01" -> Moved to EEPROM
 
 // ===== Debug =====
