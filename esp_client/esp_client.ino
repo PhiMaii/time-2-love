@@ -11,6 +11,7 @@
 #include "ButtonHandler.h"
 #include "EEPROMManager.h"
 #include "OTAManager.h"
+#include "WiFiManager.h"
 
 // Globals
 ServerClient server;
@@ -19,6 +20,7 @@ DisplayManager displayManager;
 ButtonHandler button(BUTTON_PIN);
 EEPROMManager eepromManager;
 OTAManager otaManager;
+WiFiManager wifiManager;
 
 // Timing variables
 unsigned long lastEventFetch = 0;
@@ -53,6 +55,8 @@ void setup() {
 
   // WiFi
   wifiManager.begin();
+  configTime(0, 0, "pool.ntp.org", "time.google.com");
+  Serial.println("NTP configured");
   configTime(0, 0, "pool.ntp.org", "time.google.com");
   Serial.println("NTP configured");
 
@@ -144,6 +148,8 @@ void loop() {
     eventClock.getMinutes(),
     WiFi.RSSI(),
     server.isServerReachable());
+
+  wifiManager.loop();
 
   delay(20);
 }

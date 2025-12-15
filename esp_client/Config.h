@@ -14,6 +14,7 @@
 #define SERVER_PREFIX "[SERVER] "
 #define EEPROM_PREFIX "[EEPROM] "
 #define OTA_PREFIX "[OTA] "
+#define WIFI_PREFIX "[WIFI] "
 
 // ===== WiFi =====
 // #define WIFI_SSID "FRITZ!Box 7590 NU" -> Moved to EEPROM
@@ -26,7 +27,7 @@
 #define SERVER_URL "http://192.168.178.153:3000"  // change to your server IP:port
 
 // ===== Pins =====
-#define BUTTON_PIN D5        // choose a safe pin (avoid pins that break boot)
+#define BUTTON_PIN D5        //  a safe pin
 #define LED_PIN LED_BUILTIN  // onboard LED
 
 // ===== Intervals (ms) =====

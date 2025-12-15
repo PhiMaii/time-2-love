@@ -20,13 +20,19 @@ class EEPROMManager {
 public:
   static void begin();
   static void loadOrInitialize();
+
   static String getDeviceId();
   static String getSwVersion();
+  static String getSsid();
+  static String getWifiPassword();
   static void setSwVersion(const String& version);
+  static void setSsid(const String& ssid);
+  static void setWiFiPassword(const String& password);
 
 private:
   static String readString(int addr, int maxLen);
   static void writeString(int addr, int maxLen, const String& s);
+  static EepromData _data;
 };
 
 

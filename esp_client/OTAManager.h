@@ -8,16 +8,16 @@
 class OTAManager {
 public:
     OTAManager();
-    static void begin(String deviceID, String swVersion);
+    static void begin(String deviceID, String swVersion = EEPROMManager::getSwVersion());
     static bool sendAlive();
     static bool checkForUpdate();
     static void downloadUpdate();
     static const char* getNewSwVersion();  // static + const char*
-    static const char* getCurrentSwVersion();
+    // static const char* getCurrentSwVersion();
 
 private:
     static String _newSwVersion;     // Add static!
-    static String _currentSwVersion;
+    // static String _currentSwVersion;
     static unsigned long _lastCheck; // Add static!
 };
 

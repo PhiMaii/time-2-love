@@ -3,63 +3,73 @@
 #include "EEPROMManager.h"
 #include "Config.h"
 
-static String _deviceId;
-static String _swVersion;
+EepromData EEPROMManager::_data;
 
 void EEPROMManager::begin() {
   EEPROM.begin(EEPROM_SIZE);
 }
 
 void EEPROMManager::loadOrInitialize() {
-  uint8_t magic = EEPROM.read(EEPROM_MAGIC_ADDR);
+  // uint8_t magic = EEPROM.read(EEPROM_MAGIC_ADDR);
+  EEPROM.get(EEPROM_MAGIC_ADDR, _data);  // Faster read
 
-  if (magic != EEPROM_MAGIC_VAL) {
-    // EEPROM is uninitialized → write defaults
+  if (_data.magic != EEPROM_MAGIC_VAL) {
     Serial.println("[EEPROM] Writing default values...");
 
-    EEPROM.write(EEPROM_MAGIC_ADDR, EEPROM_MAGIC_VAL);
+    _data.magic = EEPROM_MAGIC_VAL;
+    strcpy(_data.deviceId, "time2love-01");
+    strcpy(_data.swVersion, "0.1.2");
+    strcpy(_data.WiFiSSID, "YourWifiSSIDHere");
+    strcpy(_data.WiFiPassword, "YourWifiPasswordHere");
 
-    writeString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN, "time2love-99");
-    writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, "0.0.0");
-
+    EEPROM.put(EEPROM_MAGIC_ADDR, _data);
     EEPROM.commit();
   }
-
-  // Load values
-  _deviceId = readString(EEPROM_DEVICE_ID_ADDR, EEPROM_DEVICE_ID_LEN);
-  _swVersion = readString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN);
-
-  // Serial.println("[EEPROM] Loaded:");
-  // Serial.println("  Device ID: " + _deviceId);
-  // Serial.println("  SW Version: " + _swVersion);
+  Serial.println("####################\n[EEPROM] Loaded:");
+  Serial.printf("  - Device ID: %s\n", _data.deviceId);
+  Serial.printf("  - SW Version: %s\n", _data.swVersion);
+  Serial.printf("  - SSID: %s\n", _data.WiFiSSID);
+  Serial.printf("  - WiFi Password: %s\n####################\n", _data.WiFiPassword);
 }
 
 String EEPROMManager::getDeviceId() {
-  return _deviceId;
+  return String(_data.deviceId);
 }
+
 String EEPROMManager::getSwVersion() {
-  return _swVersion;
+  return String(_data.swVersion);
 }
 
-String EEPROMManager::readString(int addr, int maxLen) {
-  char buf[maxLen + 1];
-  for (int i = 0; i < maxLen; i++) {
-    buf[i] = EEPROM.read(addr + i);
-  }
-  buf[maxLen] = '\0';
-  return String(buf);
+String EEPROMManager::getSsid() {
+  return String(_data.WiFiSSID);
 }
 
-void EEPROMManager::writeString(int addr, int maxLen, const String& s) {
-  Serial.println(String(EEPROM_PREFIX) + "Writing to EEPROM ...");
-  for (int i = 0; i < maxLen; i++) {
-    char c = (i < s.length()) ? s[i] : 0;
-    EEPROM.write(addr + i, c);
-  }
-  Serial.println(String(EEPROM_PREFIX) + "Success!");
+String EEPROMManager::getWifiPassword() {
+  return String(_data.WiFiPassword);
 }
 
 void EEPROMManager::setSwVersion(const String& version) {
-  writeString(EEPROM_SW_VERSION_ADDR, EEPROM_SW_VERSION_LEN, version.c_str());
-  EEPROM.commit();
+    Serial.println(String(EEPROM_PREFIX) + "Writing SW version...");
+    strncpy(_data.swVersion, version.c_str(), EEPROM_SW_VERSION_LEN - 1);
+    _data.swVersion[EEPROM_SW_VERSION_LEN - 1] = '\0';
+    
+    EEPROM.put(EEPROM_MAGIC_ADDR, _data);
+    EEPROM.commit();
+    Serial.println(String(EEPROM_PREFIX) + "Success!");
+}
+
+void EEPROMManager::setSsid(const String& ssid) {
+    strncpy(_data.WiFiSSID, ssid.c_str(), EEPROM_SSID_LEN - 1);
+    _data.WiFiSSID[EEPROM_SSID_LEN - 1] = '\0';
+    
+    EEPROM.put(EEPROM_MAGIC_ADDR, _data);
+    EEPROM.commit();
+}
+
+void EEPROMManager::setWiFiPassword(const String& password) {
+    strncpy(_data.WiFiPassword, password.c_str(), EEPROM_WIFI_PASSWORD_LEN - 1);
+    _data.WiFiPassword[EEPROM_WIFI_PASSWORD_LEN - 1] = '\0';
+    
+    EEPROM.put(EEPROM_MAGIC_ADDR, _data);
+    EEPROM.commit();
 }
