@@ -106,6 +106,7 @@ void loop() {
       bool ok = server.triggerBlink(String(DEVICE_ID_FROM_EEPROM), peer);
       if (ok) {
         Serial.printf("Sent blink -> %s\n", peer.c_str());
+        ledManager.startHeartbeat();
         displayManager.showTempMessage("Blink sent");
       } else {
         Serial.println("Failed to send blink");
@@ -174,5 +175,5 @@ void loop() {
   wifiManager.loop();
   ledManager.loop();
 
-  delay(20);
+  delay(MAIN_LOOP_DELAY);
 }

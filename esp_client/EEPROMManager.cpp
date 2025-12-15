@@ -17,8 +17,8 @@ void EEPROMManager::loadOrInitialize() {
     Serial.println("[EEPROM] Writing default values...");
 
     _data.magic = EEPROM_MAGIC_VAL;
-    strcpy(_data.deviceId, "time2love-01");
-    strcpy(_data.swVersion, "0.1.2");
+    strcpy(_data.deviceId, "time2love-02");
+    strcpy(_data.swVersion, "0.1.3");
     strcpy(_data.WiFiSSID, "YourWifiSSIDHere");
     strcpy(_data.WiFiPassword, "YourWifiPasswordHere");
 
