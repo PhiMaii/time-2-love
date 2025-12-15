@@ -52,7 +52,7 @@ void DisplayManager::startBlinking(unsigned long ms) {
 }
 
 void DisplayManager::updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp) {
-  if (millis() - _lastDrawMs < 60) return;
+  if (millis() - _lastDrawMs < (1000 / DISPLAY_FPS)) return;
   _lastDrawMs = millis();
 
   // auto return from MESSAGE
