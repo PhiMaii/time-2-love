@@ -81,7 +81,7 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
       break;
 
     case DisplayState::SLEEP:
-      // drawSleep();
+      drawSleep();
       break;
 
       // case DisplayState::BLINK:
@@ -169,4 +169,8 @@ void DisplayManager::drawMessage() {
 void DisplayManager::drawError() {
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.drawStr(32, 18, "ERROR");
+}
+
+void DisplayManager::drawSleep(){
+  u8g2.clearBuffer();
 }

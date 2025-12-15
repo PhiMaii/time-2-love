@@ -27,17 +27,18 @@
 #define SERVER_URL "http://192.168.178.153:3000"  // change to your server IP:port
 
 // ===== Pins =====
-#define BUTTON_PIN D5        //  a safe pin
+#define BLINK_BUTTON_PIN D5        //  a safe pin
+#define SLEEP_BUTTON_PIN D6
 #define LED_PIN LED_BUILTIN  // onboard LED
 
 // ===== Intervals (ms) =====
 #define EVENT_FETCH_INTERVAL 60UL * 1000UL     // 60s
 #define BLINK_POLL_INTERVAL 1UL * 1000UL       // 1s
 #define REGISTER_INTERVAL 5UL * 60UL * 1000UL  // 5min
-
 #define OTA_CHECK_INTERVAL 60UL * 60UL * 1000UL  // 1 h
-
 #define DEBUG_INTERVAL 10UL * 1000UL  // 5s
+
+#define SLEEP_INTERVAL 10UL * 1000UL
 
 // ===== EEPROM Layout =====
 #define EEPROM_SIZE 256

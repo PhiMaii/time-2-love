@@ -17,7 +17,10 @@
 ServerClient server;
 EventClock eventClock;
 DisplayManager displayManager;
-ButtonHandler button(BUTTON_PIN);
+
+ButtonHandler blinkButton(BLINK_BUTTON_PIN);
+ButtonHandler sleepButton(SLEEP_BUTTON_PIN);
+
 EEPROMManager eepromManager;
 OTAManager otaManager;
 WiFiManager wifiManager;
@@ -70,7 +73,8 @@ void setup() {
   lastRegister = millis();
   lastOTACheck = millis();
 
-  button.begin();
+  blinkButton.begin();
+  sleepButton.begin();
 
   otaManager.begin(DEVICE_ID_FROM_EEPROM, SW_VERSION_FROM_EEPROM);
 
@@ -85,9 +89,12 @@ void loop() {
   unsigned long now = millis();
 
   // Button handling
-  button.loop();
-  if (button.wasPressed()) {
-    Serial.println("Button pressed -> trigger blink");
+  blinkButton.loop();
+  sleepButton.loop();
+
+
+  if (blinkButton.wasPressed()) {
+    Serial.println("Blink Button pressed -> trigger blink");
     String peer = server.getFirstPeer();
     if (peer.length() == 0) {
       Serial.println("No peer available to blink.");
@@ -101,6 +108,17 @@ void loop() {
         Serial.println("Failed to send blink");
         displayManager.showTempMessage("Blink fail");
       }
+    }
+  }
+
+  if (sleepButton.wasPressed()) {
+    DisplayState state = displayManager.getState();
+    if (state != DisplayState::SLEEP) {
+      Serial.println("Sleep Button pressed -> goto sleep");
+      displayManager.setState(DisplayState::SLEEP);
+    } else if(state == DisplayState::SLEEP){
+      Serial.println("Already sleeping -> waking up");
+      displayManager.setState(DisplayState::MAIN_LOOP);
     }
   }
 
@@ -134,7 +152,7 @@ void loop() {
   }
 
   // ===== Periodic OTA Update check =====
-  if (now - lastOTACheck >= OTA_CHECK_INTERVAL){
+  if (now - lastOTACheck >= OTA_CHECK_INTERVAL) {
     lastOTACheck = now;
     otaManager.checkForUpdate();
   }

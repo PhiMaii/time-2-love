@@ -55,6 +55,7 @@ private:
   void drawUpdating();
   void drawError();
   void drawMessage();
+  void drawSleep();
 };
 
 #endif
