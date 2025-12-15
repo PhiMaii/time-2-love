@@ -34,6 +34,14 @@ jobs:
         run: |
           arduino-cli lib install U8g2
 
+      - name: Install Adafruit Neopixel Library
+        run: |
+          arduino-cli lib install "Adafruit NeoPixel"
+
+      - name: Install OTA-Drive library
+        run: |
+          arduino-cli lib install "OTAdrive_ESP"
+
       - name: Compile ESP8266 D1 mini sketch
         run: |
           mkdir -p build
