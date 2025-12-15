@@ -35,6 +35,10 @@
 #define LED_STRIP_PIN D7
 #define NUM_LEDS 3
 
+// ===== Render configs =====
+#define DISPLAY_FPS 20
+#define MAIN_LOOP_DELAY 20
+
 // ===== Heartbeat setup =====
 #define HB_UP_TIME_MS 60
 #define HB_DOWN_TIME_MS 80
@@ -73,6 +77,5 @@
 // WiFi Password
 #define EEPROM_WIFI_PASSWORD_ADDR 97
 #define EEPROM_WIFI_PASSWORD_LEN 64
-
 
 #endif
