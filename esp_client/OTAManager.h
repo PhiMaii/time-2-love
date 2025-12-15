@@ -7,7 +7,7 @@
 
 class OTAManager {
 public:
-    OTAManager();
+    // OTAManager();
     static void begin(String deviceID, String swVersion = EEPROMManager::getSwVersion());
     static bool sendAlive();
     static bool checkForUpdate();

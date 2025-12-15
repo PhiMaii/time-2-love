@@ -13,6 +13,7 @@
 #include "core_esp8266_features.h"
 #include "DisplayManager.h"
 #include "OTAManager.h"
+#include "Icons.h"
 
 // SSD1306 128x32 I2C constructor
 static U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
@@ -138,8 +139,10 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
 
   // static const unsigned char PROGMEM update_icon[] = { 0x40, 0x0, 0xe2, 0x5f, 0x20, 0x41, 0x26, 0x48, 0xa0, 0x7f, 0x4, 0x20, 0x0 };
   // u8g2.drawXBMP(80, 11, 10, 10, update_icon);
-  if (OTAManager::getNewSwVersion() != "null") u8g2.drawDisc(x - 5, 5, 3);
-  // else u8g2.drawCircle(x - 5, 5, 3);
+  if (OTAManager::getNewSwVersion() == "null") u8g2.drawDisc(x - 5, 5, 3);
+  u8g2.drawCircle(x - 5, 5, 3);
+
+  // u8g2.drawXBMP(x - 5, 5, 8, 8, update_icon);
 
   if (serverUp) u8g2.drawBox(120, 2, 6, 6);
   else u8g2.drawFrame(120, 2, 6, 6);
@@ -148,7 +151,7 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
 void DisplayManager::drawMain(long weeks, long days, long hours, long minutes) {
   if (weeks == 0 && days == 0 && hours == 0 && minutes == 0) {
     u8g2.setFont(u8g2_font_6x10_tf);  // old font
-    u8g2.drawStr(0, 16, "No event / passed");
+    u8g2.drawStr(15, 25, "No event / passed");
   } else {
     char buf[48];
     snprintf(buf, sizeof(buf), "%ldw %ldt %ldh %ldm", weeks, days, hours, minutes);

@@ -11,16 +11,19 @@
 
 #include "Config.h"
 
+String OTAManager::_newSwVersion = "null";      // ← ADD THIS BACK
+
 // Static member definitions (REQUIRED!)
-String OTAManager::_newSwVersion = "null";
+// String OTAManager::_newSwVersion = "null";
 // String OTAManager::_currentSwVersion = "null";
 unsigned long OTAManager::_lastCheck = 0;
 
-OTAManager::OTAManager() {
+// OTAManager::OTAManager() {
   // Constructor body empty - statics initialized above
-}
+// }
 
 void OTAManager::begin(String deviceID, String SwVersion) {
+  _newSwVersion = "null";
   Serial.println("[OTA] Initializing OTAdrive");
 
   OTADRIVE.setInfo(OTA_DRIVE_API_KEY, SwVersion);
@@ -55,6 +58,7 @@ bool OTAManager::checkForUpdate() {
     return true;
   } else{
     Serial.println(String(OTA_PREFIX) + "Current version is up to date!");
+    _newSwVersion = "null";
     return false;
   } 
 }
