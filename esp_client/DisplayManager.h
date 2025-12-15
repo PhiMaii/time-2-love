@@ -1,16 +1,29 @@
+// DisplayManager.h
+
 #ifndef DISPLAYMANAGER_H
 #define DISPLAYMANAGER_H
 
 #include <Arduino.h>
 
 enum class DisplayState {
-  MAIN_LOOP,
-  UPDATING,
-  TEMP_MESSAGE,
-  // BLINK,
+  MAIN_LOOP, // Main loop
+  TEMP_MESSAGE, // While displaying a temp message
+
+  UPDATING, // State during FW update
+  BOOTING, // State while booting
   ERROR,
   SLEEP
 };
+
+enum class SetupState{
+  INIT_EEPROM,
+  READ_FROM_EEPROM,
+  INIT_WIFI,
+  SETUP_NTP,
+  REGISTER_OTP,
+  START_SERVER,
+  REGISTER_DEVICE
+}
 
 class DisplayManager {
 public:

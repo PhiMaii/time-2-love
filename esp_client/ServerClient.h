@@ -1,3 +1,5 @@
+// ServerClient.h
+
 #ifndef SERVERCLIENT_H
 #define SERVERCLIENT_H
 

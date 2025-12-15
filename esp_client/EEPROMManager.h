@@ -1,16 +1,20 @@
-#pragma once
-#include <EEPROM.h>
+// EEPROMManager.h
+
+#ifndef EEPROMMANAGER_H
+#define EEPROMMANAGER_H
+
 #include <Arduino.h>
+#include <EEPROM.h>
+#include "Config.h"
 
-#define EEPROM_SIZE 256
-#define EEPROM_MAGIC_ADDR 0
-#define EEPROM_MAGIC_VAL 0x42
+struct EepromData {
+  uint8_t magic = 0x42;
+  char deviceId[EEPROM_DEVICE_ID_LEN];
+  char swVersion[EEPROM_SW_VERSION_LEN];
+  char WiFiSSID[EEPROM_SSID_LEN];
+  char WiFiPassword[EEPROM_WIFI_PASSWORD_LEN];
+};
 
-#define EEPROM_DEVICE_ID_ADDR 1
-#define EEPROM_DEVICE_ID_LEN 32
-
-#define EEPROM_SW_VERSION_ADDR 33
-#define EEPROM_SW_VERSION_LEN 32
 
 class EEPROMManager {
 public:
@@ -24,3 +28,6 @@ private:
   static String readString(int addr, int maxLen);
   static void writeString(int addr, int maxLen, const String& s);
 };
+
+
+#endif

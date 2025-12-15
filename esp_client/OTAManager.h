@@ -1,4 +1,8 @@
-#pragma once
+// OTAManager.h
+
+#ifndef OTAMANAGER_H
+#define OTAMANAGER_H
+
 #include <Arduino.h>
 
 class OTAManager {
@@ -16,3 +20,5 @@ private:
     static String _currentSwVersion;
     static unsigned long _lastCheck; // Add static!
 };
+
+#endif

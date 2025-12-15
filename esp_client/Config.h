@@ -1,3 +1,5 @@
+// Config.h
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -14,8 +16,8 @@
 #define OTA_PREFIX "[OTA] "
 
 // ===== WiFi =====
-#define WIFI_SSID "FRITZ!Box 7590 NU"
-#define WIFI_PASS "95925916586060820281"
+// #define WIFI_SSID "FRITZ!Box 7590 NU" -> Moved to EEPROM
+// #define WIFI_PASS "95925916586060820281" -> Moved to EEPROM
 
 // ===== Credentials ====
 #define OTA_DRIVE_API_KEY "c51d0a1f-1c63-4e69-862b-9de2445162ff"
@@ -32,8 +34,30 @@
 #define BLINK_POLL_INTERVAL 1UL * 1000UL       // 1s
 #define REGISTER_INTERVAL 5UL * 60UL * 1000UL  // 5min
 
-#define OTA_CHECK_INTERVAL 12UL * 60UL * 60UL * 1000UL  // 12 h
+#define OTA_CHECK_INTERVAL 60UL * 60UL * 1000UL  // 1 h
 
 #define DEBUG_INTERVAL 10UL * 1000UL  // 5s
+
+// ===== EEPROM Layout =====
+#define EEPROM_SIZE 256
+#define EEPROM_MAGIC_ADDR 0
+#define EEPROM_MAGIC_VAL 0x42
+
+// Device id
+#define EEPROM_DEVICE_ID_ADDR 1
+#define EEPROM_DEVICE_ID_LEN 32
+
+// Firmware version
+#define EEPROM_SW_VERSION_ADDR 33
+#define EEPROM_SW_VERSION_LEN 32
+
+// WiFi SSID
+#define EEPROM_SSID_ADDR 65
+#define EEPROM_SSID_LEN 32
+
+// WiFi Password
+#define EEPROM_WIFI_PASSWORD_ADDR 97
+#define EEPROM_WIFI_PASSWORD_LEN 64
+
 
 #endif
