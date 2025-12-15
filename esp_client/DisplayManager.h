@@ -15,15 +15,15 @@ enum class DisplayState {
   SLEEP
 };
 
-enum class SetupState{
-  INIT_EEPROM,
-  READ_FROM_EEPROM,
-  INIT_WIFI,
-  SETUP_NTP,
-  REGISTER_OTP,
-  START_SERVER,
-  REGISTER_DEVICE
-}
+// enum class SetupState{
+//   INIT_EEPROM,
+//   READ_FROM_EEPROM,
+//   INIT_WIFI,
+//   SETUP_NTP,
+//   REGISTER_OTP,
+//   START_SERVER,
+//   REGISTER_DEVICE
+// }
 
 class DisplayManager {
 public:

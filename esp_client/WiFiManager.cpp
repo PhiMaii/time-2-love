@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-#include "ESP8266WiFi.h"
 // WiFiManager.cpp
-=======
-// ================= WiFiManager.cpp =================
->>>>>>> d25a20512cd453e968a3f945c35ed3659aa59089
+
+#include "ESP8266WiFi.h"
 #include "WiFiManager.h"
 #include "EEPROMManager.h"
 #include "Config.h"
@@ -29,11 +26,8 @@ void WiFiManager::begin() {
 }
 
 void WiFiManager::loop() {
-<<<<<<< HEAD
   if (WiFi.status() != WL_CONNECTED) server.handleClient();
-=======
-  server.handleClient();
->>>>>>> d25a20512cd453e968a3f945c35ed3659aa59089
+  // server.handleClient();
 }
 
 bool WiFiManager::connectWiFi(const String& ssid, const String& password) {
@@ -71,28 +65,6 @@ void WiFiManager::startAP() {
     Serial.println("[WIFI] Failed to start AP");
   }
 
-<<<<<<< HEAD
-=======
-  // dnsServer.start(53, "*", WiFi.softAPIP());
-  // Serial.println("[WIFI] DNS server started (Captive Portal active)");
-
-  // server.onNotFound([this]() {
-  //   server.sendHeader("Location", String("http://") + WiFi.softAPIP().toString(), true);
-  //   server.send(302, "text/plain", "");
-  // });
-
-  // server.on("/hotspot-detect.html", [this]() {
-  //   Serial.println("[WiFiManager] iOS captive check");
-  //   server.send(200, "text/html",
-  //               "<!DOCTYPE html>"
-  //               "<html><head>"
-  //               "<meta http-equiv='refresh' content='0; url=/' />"
-  //               "</head><body>"
-  //               "Redirecting..."
-  //               "</body></html>");
-  // });
-
->>>>>>> d25a20512cd453e968a3f945c35ed3659aa59089
   server.on("/", [this]() {
     Serial.println("[WIFI] Client connected to captive portal");
     server.send(200, "text/html",
