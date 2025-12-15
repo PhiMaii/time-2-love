@@ -41,6 +41,11 @@ DisplayState DisplayManager::getState() const {
   return _state;
 }
 
+// void DisplayManager::setBootProgress(uint8_t percent, const char* label) {
+//   _bootLabel = label;
+//   _bootPercent = percent;
+// }
+
 void DisplayManager::showTempMessage(const char* msg, unsigned long durationMs) {
   _tempMsg = msg;
   _tempUntil = millis() + durationMs;
@@ -82,6 +87,11 @@ void DisplayManager::updateDisplay(long weeks, long days, long hours, long minut
 
     case DisplayState::SLEEP:
       drawSleep();
+      break;
+
+    case DisplayState::BOOTING:
+      // drawBootProgress();
+      // Serial.println("State:booting");
       break;
 
       // case DisplayState::BLINK:
@@ -128,7 +138,7 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
 
   // static const unsigned char PROGMEM update_icon[] = { 0x40, 0x0, 0xe2, 0x5f, 0x20, 0x41, 0x26, 0x48, 0xa0, 0x7f, 0x4, 0x20, 0x0 };
   // u8g2.drawXBMP(80, 11, 10, 10, update_icon);
-  if(OTAManager::getNewSwVersion() != "null") u8g2.drawDisc(x - 5, 5, 3);
+  if (OTAManager::getNewSwVersion() != "null") u8g2.drawDisc(x - 5, 5, 3);
   // else u8g2.drawCircle(x - 5, 5, 3);
 
   if (serverUp) u8g2.drawBox(120, 2, 6, 6);
@@ -171,6 +181,26 @@ void DisplayManager::drawError() {
   u8g2.drawStr(32, 18, "ERROR");
 }
 
-void DisplayManager::drawSleep(){
+void DisplayManager::drawSleep() {
   u8g2.clearBuffer();
+}
+
+void DisplayManager::drawBootProgress(uint8_t percent, const char* label) {
+  u8g2.clearBuffer();
+  static const int PROGRESS_X = 10;
+  static const int PROGRESS_Y = 26;
+  static const int PROGRESS_WIDTH = 108;
+  static const int PROGRESS_HEIGHT = 6;
+
+  u8g2.setFont(u8g2_font_10x20_tf);
+
+  int textWidth = u8g2.getStrWidth(label);
+  int x = (u8g2.getDisplayWidth() - textWidth) / 2;
+
+  u8g2.drawStr(x, 18, label);
+  // u8g2.sendBuffer();
+
+  u8g2.drawFrame(PROGRESS_X, PROGRESS_Y, PROGRESS_WIDTH, PROGRESS_HEIGHT);
+  u8g2.drawBox(PROGRESS_X, PROGRESS_Y, (PROGRESS_WIDTH * percent / 100), PROGRESS_HEIGHT);
+  u8g2.sendBuffer();
 }

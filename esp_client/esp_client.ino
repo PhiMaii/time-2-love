@@ -13,6 +13,7 @@
 #include "OTAManager.h"
 #include "WiFiManager.h"
 #include "LEDManager.h"
+#include "BootManager.h"
 
 // Globals
 ServerClient server;
@@ -27,22 +28,28 @@ EEPROMManager eepromManager;
 OTAManager otaManager;
 WiFiManager wifiManager;
 
+BootManager bootManager(displayManager);
+
+
 // Timing variables
 unsigned long lastEventFetch = 0;
 unsigned long lastBlinkPoll = 0;
 unsigned long lastRegister = 0;
 unsigned long lastOTACheck = 0;
 
+
+// Global version variables
 String DEVICE_ID_FROM_EEPROM = "";
 String SW_VERSION_FROM_EEPROM = "";
 
 void setup() {
-  delay(100);
-
+  // delay(100);
   Serial.begin(115200);
 
   delay(500);
 
+  // displayManager.setState(DisplayState::BOOTING);
+  bootManager.setState(BootManager::BOOT_START, "EEPROM ...");
   eepromManager.begin();
   eepromManager.loadOrInitialize();
 
@@ -55,37 +62,45 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);  // builtin LED active LOW on many boards
 
+  bootManager.setState(BootManager::DISPLAY_INIT, "Display...");
   displayManager.begin();
   displayManager.showTempMessage("Booting...");
 
   // WiFi
+  bootManager.setState(BootManager::WIFI_CONNECT, "WiFi...");
   wifiManager.begin();
-  configTime(0, 0, "pool.ntp.org", "time.google.com");
-  Serial.println("NTP configured");
+
+  bootManager.setState(BootManager::TIME_SYNC, "Time sync...");
   configTime(0, 0, "pool.ntp.org", "time.google.com");
   Serial.println("NTP configured");
 
+  bootManager.setState(BootManager::SERVER_INIT, "Server...");
   server.begin(SERVER_URL);
   server.registerDevice(String(DEVICE_ID_FROM_EEPROM));
 
+  bootManager.setState(BootManager::EVENT_FETCH, "Event...");
   eventClock.fetchEventFromServer();
+
+  bootManager.setState(BootManager::BUTTON_INIT, "Buttons...");
+  blinkButton.begin();
+  sleepButton.begin();
+  ledManager.begin();
+
+  bootManager.setState(BootManager::OTA_INIT, "OTA...");
+  otaManager.begin(DEVICE_ID_FROM_EEPROM, SW_VERSION_FROM_EEPROM);
+
+  bootManager.setState(BootManager::BOOT_READY, "Ready");
+  // displayManager.setState(DisplayState::MAIN_LOOP);
+  // displayManager.showTempMessage("Ready");
+  delay(600);
+
+  // if(otaManager.checkForUpdate()) otaManager.downloadUpdate();
+  otaManager.checkForUpdate();
 
   lastEventFetch = millis();
   lastBlinkPoll = millis();
   lastRegister = millis();
   lastOTACheck = millis();
-
-  blinkButton.begin();
-  sleepButton.begin();
-  ledManager.begin();
-
-  otaManager.begin(DEVICE_ID_FROM_EEPROM, SW_VERSION_FROM_EEPROM);
-
-  displayManager.showTempMessage("Ready");
-  delay(600);
-
-  // if(otaManager.checkForUpdate()) otaManager.downloadUpdate();
-  otaManager.checkForUpdate();
 }
 
 void loop() {
@@ -120,7 +135,7 @@ void loop() {
     if (state != DisplayState::SLEEP) {
       Serial.println("Sleep Button pressed -> goto sleep");
       displayManager.setState(DisplayState::SLEEP);
-    } else if(state == DisplayState::SLEEP){
+    } else if (state == DisplayState::SLEEP) {
       Serial.println("Already sleeping -> waking up");
       displayManager.setState(DisplayState::MAIN_LOOP);
     }
