@@ -33,7 +33,7 @@
 #define LED_PIN LED_BUILTIN  // onboard LED
 
 #define LED_STRIP_PIN D7
-#define NUM_LEDS 3
+#define NUM_LEDS 8
 
 // ===== Render configs =====
 #define DISPLAY_FPS 20
