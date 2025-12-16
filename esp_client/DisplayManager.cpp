@@ -140,7 +140,7 @@ void DisplayManager::drawStatusBar(int rssi, bool serverUp) {
   // static const unsigned char PROGMEM update_icon[] = { 0x40, 0x0, 0xe2, 0x5f, 0x20, 0x41, 0x26, 0x48, 0xa0, 0x7f, 0x4, 0x20, 0x0 };
   // u8g2.drawXBMP(80, 11, 10, 10, update_icon);
   if (OTAManager::getNewSwVersion() == "null") u8g2.drawDisc(x - 5, 5, 3);
-  u8g2.drawCircle(x - 5, 5, 3);
+  else u8g2.drawCircle(x - 5, 5, 3);
 
   // u8g2.drawXBMP(x - 5, 5, 8, 8, update_icon);
 
