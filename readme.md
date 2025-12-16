@@ -1,3 +1,8 @@
+
+[![Deploy server](https://github.com/PhiMaii/time-2-love/actions/workflows/deploy.yml/badge.svg)](https://github.com/PhiMaii/time-2-love/actions/workflows/deploy.yml) [![Build  firmware](https://github.com/PhiMaii/time-2-love/actions/workflows/build.yml/badge.svg)](https://github.com/PhiMaii/time-2-love/actions/workflows/build.yml)
+
+---
+
 # ❤️ Time2Love — Connected Countdown Device
 
 **Time2Love** is a small, WiFi-connected countdown device built with an ESP8266 and an OLED display.  
@@ -5,35 +10,44 @@ It shows the remaining time until a meaningful event (e.g. the next time two peo
 
 ---
 
-## TO-DOs:
+## TO-DOs
 
-- Make ther server use NEXT.js
-- use Websockets for instant blink responses
-- Devices send heartbeats to track online status from the dashboard
-- latency charts on dashboard
-- custom OTA server
-- remote configuration (and management) of the devices 
+- [ ] Server/Backend improvements:
+  - [ ] Make a more fancy server using NEXT.js
+  - [ ] Implement a custom DIY OTA server
+  - [ ] latency and uptime/online charts on dashboard
+  
+- [ ] Hardware improvements
+  - [ ] ...
+  
+- [ ] Future feature ideas:
+  - [ ] use Websockets for instant blink responses
+  - [ ] Devices send heartbeats to track online status from the dashboard
+  - [ ] remote configuration (and management) of the devices 
 
----
-
-## ✨ Features
-
-- ⏳ Countdown to a fixed event date (weeks / days / hours)
-- 📡 WiFi-connected (ESP8266)
-- 🖥 128×32 OLED display (SSD1306, U8g2)
-- 🔘 Physical button to trigger a remote blink
-- 💓 Remote blink when the paired device presses its button
-- ☁️ Simple Node.js server for pairing & messaging
-- 💾 Persistent configuration via EEPROM
-- 🔄 OTA firmware updates via **OTAdrive**
 
 ---
 
-## 🧱 Hardware Requirements
+## Key features
+
+- Countdown to a fixed event date (weeks / days / hours / minutes)
+- WiFi-connected event synching
+- 128×32 OLED display (SSD1306, U8g2)
+- 2 physical buttons to trigger a remote blink and toggle sleep
+- Remote blink when the paired device presses its button
+- Simple Node.js server for pairing & messaging
+- Persistent configuration via **EEPROM**
+- OTA firmware updates via **OTAdrive**
+
+---
+
+## Required hardware
 
 - Wemos D1 Mini (ESP8266) or compatible clone
 - 128×32 OLED display (SSD1306, I2C)
-- Push button
+- 2 Push buttons
+- WS2812B adressable RGB LEDs
+- (Optional: 3D printed case) 
 
 ---
 
@@ -43,33 +57,47 @@ It shows the remaining time until a meaningful event (e.g. the next time two peo
 ├── esp_client/                         # ESP8266 firmware (Wemos D1 Mini)
 │   ├── build/                          # Arduino build output (auto-generated)
 │   │   └── esp8266.esp8266_d1_mini_clone/
-│   │       ├── esp_client.ino.elf      # ELF binary (debug symbols)
-│   │       ├── esp_client.ino.map      # Memory map file
+│   │       ├── esp_client.ino.elf      # 
+│   │       ├── esp_client.ino.map      # 
 │   │       └── firmware.bin            # Final firmware image (used for OTA)
 │   │
 │   ├── esp_client.ino                  # Main Arduino entry point (setup & loop)
 │   ├── Config.h                        # Global configuration (WiFi, server URL, OTAdrive API key)
 │   │
-│   ├── ButtonHandler.h                 # Button input interface and debouncing logic
-│   ├── ButtonHandler.cpp               # Button press handling and event triggering
+│   ├── ButtonHandler.h                 # Button press and hold handling and event triggering
+│   ├── ButtonHandler.cpp               # 
 │   │
-│   ├── DisplayManager.h                # OLED display interface (SSD1306, U8g2)
-│   ├── DisplayManager.cpp              # Countdown rendering, icons, and blink visualization
+│   ├── DisplayManager.h                # Display rendering, icons, countdown and blink visualization
+│   ├── DisplayManager.cpp              # 
 │   │
-│   ├── EEPROMManager.h                 # EEPROM layout and persistent configuration interface
-│   ├── EEPROMManager.cpp               # EEPROM initialization, read/write logic, defaults handling
+│   ├── EEPROMManager.h                 # EEPROM initialization, read/write logic, defaults handling
+│   ├── EEPROMManager.cpp               # 
 │   │
-│   ├── EventClock.h                    # Event countdown calculation interface
-│   ├── EventClock.cpp                  # Time calculation (weeks / days / hours) and server sync
+│   ├── EventClock.h                    # Time calculation (weeks / days / hours / minutes) and server sync
+│   ├── EventClock.cpp                  # 
 │   │
-│   ├── ServerClient.h                  # HTTP client interface for server communication
-│   ├── ServerClient.cpp                # Device registration, peer handling, blink messaging
+│   ├── WiFiManager.h                   # WiFi setup and connection
+│   ├── WiFiManager.cpp                 #
 │   │
-│   ├── OTAManager.h                    # OTA update interface (OTAdrive)
-│   └── OTAManager.cpp                  # OTA initialization, periodic update checks, reboot handling
+│   ├── ServerClient.h                  # Device registration, peer handling, blink messaging via HTTP
+│   ├── ServerClient.cpp                #
+│   │
+│   ├── LEDManager.h                    # Initialization and controlling of the LEDs
+│   ├── LEDManager.cpp                  #
+│   │
+│   ├── BootManager.h                   # Startup sequence and display boot progress
+│   ├── BootManager.cpp                 #
+│   │
+│   ├── DelayedCaller.h                 # Helper to delay a function call by a variable amount
+│   ├── DelayedCaller.cpp               #
+│   │
+│   ├── OTAManager.h                    # OTA initialization, periodic update checks, reboot handling
+│   └── OTAManager.cpp                  # 
 │
 ├── server/                             # Simple Node.js backend server
-│   ├── server.js                       # Express server (event date, device pairing, blink events)
+│   ├── Dockerfile                      # Creates the docker container thats used to run the server
+│   ├── entrypoint.sh                   # Used by the local GitHub runner to pull the latest changes from GitHub
+│   ├── server.js                       # Express server handles: event date, device pairing, blink events
 │   ├── package.json                    # Node.js dependencies and scripts
 │   └── package-lock.json               # Locked dependency versions
 │
@@ -78,16 +106,16 @@ It shows the remaining time until a meaningful event (e.g. the next time two peo
 
 ---
 
-## 🧠 Architecture Overview
+## Architecture Overview
 
 ### ESP Device
 - Connects to WiFi
 - Registers itself at the server using a persistent `DEVICE_ID`
 - Fetches a fixed event timestamp from the server
-- Displays remaining time
-- Polls for blink events
+- Checks for newer firmware versions
+- Displays remaining time to the event
+- Polls for blink events periodically
 - Sends blink triggers on button press
-- Periodically checks for OTA updates
 
 ### Server
 - Keeps an in-memory list of registered devices
