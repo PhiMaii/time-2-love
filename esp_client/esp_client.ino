@@ -14,6 +14,7 @@
 #include "WiFiManager.h"
 #include "LEDManager.h"
 #include "BootManager.h"
+#include "DelayedCaller.h"
 
 // Globals
 ServerClient server;
@@ -30,6 +31,8 @@ WiFiManager wifiManager;
 
 BootManager bootManager(displayManager);
 
+DelayedCaller delayedCaller;
+
 
 // Timing variables
 unsigned long lastEventFetch = 0;
@@ -37,6 +40,7 @@ unsigned long lastBlinkPoll = 0;
 unsigned long lastRegister = 0;
 unsigned long lastOTACheck = 0;
 
+bool waitingForResponse = false;
 
 // Global version variables
 String DEVICE_ID_FROM_EEPROM = "";
@@ -110,6 +114,31 @@ void loop() {
   blinkButton.loop();
   sleepButton.loop();
 
+  if (sleepButton.wasLongPressed()) {
+    displayManager.showTempMessage("Searching ...");
+    if (otaManager.checkForUpdate()) {
+      // displayManager.showTempMessage("Update found!");
+      // delay(1000);
+      displayManager.showTempMessage("Installing ...");
+      delayedCaller.callWithDelay(otaManager.downloadUpdate, 1000);
+
+
+      // waitingForResponse = true;
+      // while (!(sleepButton.wasPressed() || blinkButton.wasPressed())) {
+      //   if (sleepButton.wasLongPressed()) {
+      //     displayManager.showTempMessage("Installing ...");
+      //     break;
+      //   }
+      //   delay(20);
+      // }
+    } else {
+
+      displayManager.showTempMessage("Up to date");
+    }
+    // if(otaManager.checkForUpdate()) otaManager.downloadUpdate();
+    // Serial.println("long press detected");
+  }
+
 
   if (blinkButton.wasPressed()) {
     Serial.println("Blink Button pressed -> trigger blink");
@@ -155,13 +184,6 @@ void loop() {
       Serial.printf("Blink event from %s\n", info.from.c_str());
       ledManager.startHeartbeat();
       displayManager.startBlinking(2000);  // blink for 2s visually
-      // flash LED quickly
-      // for (int i = 0; i < 6; ++i) {
-      //   digitalWrite(LED_PIN, LOW);
-      //   delay(80);
-      //   digitalWrite(LED_PIN, HIGH);
-      //   delay(80);
-      // }
     }
   }
 
@@ -189,6 +211,7 @@ void loop() {
 
   wifiManager.loop();
   ledManager.loop();
+  delayedCaller.update();
 
   delay(MAIN_LOOP_DELAY);
 }

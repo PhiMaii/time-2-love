@@ -31,7 +31,8 @@ public:
 
   // Main functions
   void updateDisplay(long weeks, long days, long hours, long minutes, int rssi, bool serverUp);
-  static void displayUpdateProgress(int progress, int total);
+
+  static void onUpdateProgress(int progress, int total);
 
   // void setBootProgress(uint8_t percent, const char* label);
   void drawBootProgress(uint8_t percent, const char* label);
@@ -49,7 +50,7 @@ private:
 
   void drawStatusBar(int rssi, bool serverUp);
   void drawMain(long weeks, long days, long hours, long minutes);
-  void drawUpdating();
+  // void drawUpdating();
   void drawError();
   void drawMessage();
   void drawSleep();

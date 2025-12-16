@@ -164,9 +164,18 @@ void DisplayManager::drawMain(long weeks, long days, long hours, long minutes) {
   }
 }
 
-void DisplayManager::drawUpdating() {
-  u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.drawStr(30, 18, "Updating...");
+// void DisplayManager::drawUpdating() {
+//   // u8g2.setFont(u8g2_font_6x10_tf);
+//   // u8g2.drawStr(30, 18, "Updating...");
+// }
+
+void DisplayManager::onUpdateProgress(int progress, int total) {
+  int progressPercent = ( progress) / total;
+
+  u8g2.clearBuffer();
+
+  u8g2.drawFrame(10, 1, 108, 6);
+  u8g2.drawBox(10, 1, (108 * progressPercent ), 6);
 }
 
 void DisplayManager::drawMessage() {

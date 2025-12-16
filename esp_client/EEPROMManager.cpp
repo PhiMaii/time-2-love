@@ -17,10 +17,10 @@ void EEPROMManager::loadOrInitialize() {
     Serial.println("[EEPROM] Writing default values...");
 
     _data.magic = EEPROM_MAGIC_VAL;
-    strcpy(_data.deviceId, "time2love-02");
-    strcpy(_data.swVersion, "0.1.3");
-    strcpy(_data.WiFiSSID, "YourWifiSSIDHere");
-    strcpy(_data.WiFiPassword, "YourWifiPasswordHere");
+    strcpy(_data.deviceId, "time2love-01");
+    strcpy(_data.swVersion, "0.2.0");
+    strcpy(_data.WiFiSSID, "FRITZ!Box 7590 NU");
+    strcpy(_data.WiFiPassword, "95925916586060820281");
 
     EEPROM.put(EEPROM_MAGIC_ADDR, _data);
     EEPROM.commit();

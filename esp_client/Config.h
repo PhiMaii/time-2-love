@@ -4,7 +4,7 @@
 #define CONFIG_H
 
 // ===== Device Infos =====
-// #define SOFTWARE_VERSION "0.1.3" -> just used for Github actions - Moved to EEPROM
+// #define SOFTWARE_VERSION "0.2.0" -> just used for Github actions - Moved to EEPROM
 // #define DEVICE_ID "time2love-01" -> Moved to EEPROM
 
 // ===== Debug =====
@@ -24,7 +24,8 @@
 #define OTA_DRIVE_API_KEY "c51d0a1f-1c63-4e69-862b-9de2445162ff"
 
 // ===== Server (http) =====
-#define SERVER_URL "http://192.168.178.153:3000"  // change to your server IP:port
+// #define SERVER_URL "http://192.168.178.153:3000"  // change to your server IP:port
+#define SERVER_URL "http://time2love.phimai.net:3000"  // change to your server IP:port
 
 // ===== Pins =====
 #define BLINK_BUTTON_PIN D5  //  a safe pin
@@ -37,7 +38,7 @@
 
 // ===== Render configs =====
 #define DISPLAY_FPS 20
-#define MAIN_LOOP_DELAY 20
+#define MAIN_LOOP_DELAY 5
 
 // ===== Heartbeat setup =====
 #define HB_UP_TIME_MS 60
@@ -60,7 +61,7 @@
 // ===== EEPROM Layout =====
 #define EEPROM_SIZE 256
 #define EEPROM_MAGIC_ADDR 0
-#define EEPROM_MAGIC_VAL 0x69
+#define EEPROM_MAGIC_VAL 0x77
 
 // Device id
 #define EEPROM_DEVICE_ID_ADDR 1
