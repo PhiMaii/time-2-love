@@ -3,7 +3,14 @@
 #include "ButtonHandler.h"
 
 ButtonHandler::ButtonHandler(uint8_t pin)
-  : _pin(pin), _lastState(HIGH), _pressed(false), _longPressed(false), _lastDebounce(0), _pressStartTime(0) {}
+  : _pin(pin),
+    _stableState(HIGH),
+    _lastReading(HIGH),
+    _longPressEvent(false),
+    _shortPressEvent(false),
+    _longPressFired(false),        // 🔑 NEW
+    _lastDebounceTime(0),
+    _pressStartTime(0) {}
 
 void ButtonHandler::begin() {
   pinMode(_pin, INPUT_PULLUP);
@@ -11,40 +18,57 @@ void ButtonHandler::begin() {
 
 void ButtonHandler::loop() {
   bool reading = digitalRead(_pin);
+  unsigned long now = millis();
 
-  // Debounce state change
-  if (reading != _lastState) {
-    _lastDebounce = millis();
+  // ---------- Debounce ----------
+  if (reading != _lastReading) {
+    _lastDebounceTime = now;
+    _lastReading = reading;
   }
 
-  // Button pressed (HIGH->LOW transition)
-  if (_lastState == HIGH && reading == LOW) {
-    _pressed = true;
-    _longPressed = false;
-    _pressStartTime = millis();
+  if ((now - _lastDebounceTime) < DEBOUNCE_MS) {
+    return;
   }
 
-  // Check for long press while held
-  if (_pressed && !_longPressed && (millis() - _pressStartTime > LONG_PRESS_MS)) {
-    _longPressed = true;
-    Serial.println("LONG PRESS!!!");
+  // ---------- Stable state change ----------
+  if (reading != _stableState) {
+    _stableState = reading;
+
+    // Button pressed
+    if (_stableState == LOW) {
+      _pressStartTime = now;
+      _longPressFired = false;     // reset for new press
+    }
+
+    // Button released
+    else {
+      if (!_longPressFired &&
+          (now - _pressStartTime) < LONG_PRESS_MS) {
+        _shortPressEvent = true;
+      }
+    }
   }
 
-  _lastState = reading;
+  // ---------- Long press detection (ONE-SHOT) ----------
+  if (_stableState == LOW &&
+      !_longPressFired &&
+      (now - _pressStartTime) >= LONG_PRESS_MS) {
+    _longPressFired = true;
+    _longPressEvent = true;
+  }
 }
 
 bool ButtonHandler::wasPressed() {
-  if (_pressed && !_longPressed) {  // Only short press
-    _pressed = false;
+  if (_shortPressEvent) {
+    _shortPressEvent = false;
     return true;
   }
   return false;
 }
 
 bool ButtonHandler::wasLongPressed() {
-  if (_longPressed) {
-    _longPressed = false;
-    _pressed = false;  // Clear both
+  if (_longPressEvent) {
+    _longPressEvent = false;   // consume event
     return true;
   }
   return false;
