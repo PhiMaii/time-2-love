@@ -1,1 +1,8 @@
 /.DS_Store
+
+*.bak
+*.tmp
+*.kicad_prl
+*-cache.lib
+_autosave-*
+.fp-info-cache
