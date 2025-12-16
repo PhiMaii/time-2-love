@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 // Hard-coded event date: set this to something you like.
 // Use an ISO string or compute epoch seconds directly.
 // Example below: event on 2026-01-01 12:00:00 UTC -> compute epoch
-const EVENT_EPOCH = Math.floor(new Date('2025-12-19T17:03:00Z').getTime() / 1000);
+const EVENT_EPOCH = Math.floor(new Date('2026-01-23T18:41:00Z').getTime() / 1000);
 
 const devices = new Set();
 const blinkFlags = {}; // map: deviceId -> {from: deviceId, ts: epoch}
