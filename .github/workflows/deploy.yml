@@ -1,0 +1,29 @@
+name: Deploy blink-server
+
+on:
+  workflow_dispatch:        # Manual trigger
+  push:
+    branches:
+      - production          # Auto trigger on pushes to production
+
+jobs:
+  deploy-server:
+    runs-on: self-hosted     # uses your self-hosted runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          cd server
+          sudo docker build -t blink-server .
+
+      - name: Stop old container
+        run: |
+          sudo docker stop blink-server || true
+          sudo docker rm blink-server || true
+
+      - name: Run new container
+        run: |
+          sudo docker run -d --name blink-server -p 3000:3000 blink-server
