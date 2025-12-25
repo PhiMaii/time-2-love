@@ -8,3 +8,8 @@ _autosave-*
 .fp-info-cache
 
 /server/node_modules/
+.vscode/settings.json
+
+/PCB/*
+PCB/time-2-love-PCB.*
+.DS_Store
