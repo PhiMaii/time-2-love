@@ -10,8 +10,7 @@ _autosave-*
 /server/node_modules/
 .vscode/settings.json
 
-/PCB/*
-PCB/time-2-love-PCB.*
+
 .DS_Store
 
 # Ignore all node_modules folders
