@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time2Love PWA Push</title>
+</head>
+
+<body>
+    <h1>Time2Love Push Notifications</h1>
+    <button id="subscribe">Enable Push Notifications</button>
+    <button id="unsubscribe">Disable Push Notifications</button>
+    <pre id="log"></pre>
+
+    <script>
+        const logEl = document.getElementById('log');
+        function log(msg) {
+            console.log(msg);
+            logEl.textContent += msg + "\n";
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+            const rawData = window.atob(base64);
+            return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+        }
+
+        async function resetOldSubscription() {
+            if (!('serviceWorker' in navigator)) return;
+            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            const oldSub = await registration.pushManager.getSubscription();
+            if (oldSub) {
+                await oldSub.unsubscribe();
+                log("✅ Old subscription removed");
+            }
+            return registration;
+        }
+
+        async function subscribeForPush() {
+            if (!('serviceWorker' in navigator)) {
+                alert("Service workers are not supported in this browser.");
+                return;
+            }
+
+            log("⏳ Registering service worker...");
+            const registration = await resetOldSubscription();
+
+            log("⏳ Fetching VAPID public key from server...");
+            const response = await fetch("/vapidPublicKey");
+            const data = await response.json();
+            const applicationServerKey = urlBase64ToUint8Array(data.publicKey);
+
+            log("⏳ Subscribing for push notifications...");
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey
+            });
+
+            log("✅ Push subscription created");
+            log(JSON.stringify(subscription, null, 2));
+
+            log("⏳ Sending subscription to server...");
+            await fetch("/registerPush", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(subscription)
+            });
+            log("✅ Subscription sent to server");
+
+            alert("Push notifications enabled!");
+        }
+
+        async function unsubscribeFromPush() {
+            if (!('serviceWorker' in navigator)) {
+                alert("Service workers are not supported in this browser.");
+                return;
+            }
+
+            log("⏳ Looking for existing subscription...");
+
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                log("ℹ️ No active push subscription found");
+                alert("Push notifications are already disabled.");
+                return;
+            }
+
+            log("⏳ Unsubscribing...");
+            await subscription.unsubscribe();
+            log("✅ Push subscription removed");
+
+            // OPTIONAL: inform your server
+            log("⏳ Informing server...");
+            await fetch("/unregisterPush", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(subscription)
+            });
+            log("✅ Server updated");
+
+            alert("Push notifications disabled!");
+        }
+
+        document
+            .getElementById("subscribe")
+            .addEventListener("click", subscribeForPush);
+        document
+            .getElementById("unsubscribe")
+            .addEventListener("click", unsubscribeFromPush);
+    </script>
+</body>
+
+</html>
