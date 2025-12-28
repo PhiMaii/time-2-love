@@ -13,3 +13,11 @@ _autosave-*
 /PCB/*
 PCB/time-2-love-PCB.*
 .DS_Store
+
+# Ignore all node_modules folders
+**/node_modules/
+
+# Ignore all .vscode folders
+**/.vscode/
+server/pushSubscriptions.json
+server/vapid.json
