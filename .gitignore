@@ -21,3 +21,5 @@ PCB/time-2-love-PCB.*
 **/.vscode/
 server/pushSubscriptions.json
 server/vapid.json
+
+server/node_modules
