@@ -3,8 +3,8 @@ const path = require("path");
 const DEVICE_FILE = path.join(__dirname, "../data/devices.json");
 
 const devices = {};         // deviceId -> info
-// const onlineDevices = new Set();
 
+// Load devices from JSON file
 function load() {
     try {
         const data = fs.readFileSync(DEVICE_FILE, "utf8");
@@ -14,10 +14,12 @@ function load() {
     }
 }
 
+// Save devices to JSON file
 function save() {
     fs.writeFileSync(DEVICE_FILE, JSON.stringify(devices, null, 2));
 }
 
+// Handle client connect
 function clientConnect(client) {
     // onlineDevices.add(client.id);
     if (!devices[client.id]) {
@@ -30,6 +32,7 @@ function clientConnect(client) {
     console.log(`🟢 CONNECT clientId=${client.id}`);
 }
 
+// Handle client disconnect
 function clientDisconnect(client) {
     // onlineDevices.delete(client.id);
     if (devices[client.id]) {
@@ -39,6 +42,7 @@ function clientDisconnect(client) {
     console.log(`🔴 DISCONNECT clientId=${client.id}`);
 }
 
+// List all devices
 function list() {
     return Object.entries(devices).map(([id, info]) => ({
         deviceId: id,

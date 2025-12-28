@@ -4,10 +4,12 @@ const webPush = require("web-push");
 const PUSH_FILE = path.join(__dirname, "../data/pushSubscriptions.json");
 const vapidKeys = require("../config/vapid.json");
 
-webPush.setVapidDetails("mailto:you@example.com", vapidKeys.publicKey, vapidKeys.privateKey);
+// Configure web-push with VAPID keys
+webPush.setVapidDetails("mailto:admin@phimai.net", vapidKeys.publicKey, vapidKeys.privateKey);
 
 const subscriptions = new Map();
 
+// Load push subscriptions from JSON file
 function load() {
     try {
         const data = fs.readFileSync(PUSH_FILE, "utf8");
@@ -20,10 +22,12 @@ function load() {
     }
 }
 
+// Save push subscriptions to JSON file
 function save() {
     fs.writeFileSync(PUSH_FILE, JSON.stringify(Object.fromEntries(subscriptions), null, 2));
 }
 
+// Register a new push subscription
 function register(sub) {
     if (!sub?.endpoint) return false;
     subscriptions.set(sub.endpoint, { ...sub, created: Date.now(), lastUsed: Date.now() });
@@ -32,6 +36,7 @@ function register(sub) {
     return true;
 }
 
+// Unregister a push subscription
 function unregister(sub) {
     if (!sub?.endpoint) return false;
     subscriptions.delete(sub.endpoint);
@@ -40,6 +45,7 @@ function unregister(sub) {
     return true;
 }
 
+// Send a push notification to all registered subscriptions
 async function sendNotification(message) {
     console.log(`🔔 Sending push notification`);
 
