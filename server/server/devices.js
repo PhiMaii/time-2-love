@@ -4,6 +4,18 @@ const DEVICE_FILE = path.join(__dirname, "../data/devices.json");
 
 const devices = {};         // deviceId -> info
 
+/*
+type Device = {
+    deviceId: string,
+    deviceName: string,
+    deviceType: string,
+    created: number,
+    lastSeen: number,
+    online: boolean,
+    currentFWVersion?: string,
+};
+*/
+
 // Load devices from JSON file
 function load() {
     try {
@@ -44,11 +56,16 @@ function clientDisconnect(client) {
 
 // List all devices
 function list() {
+    console.log('Listing devices: ');
+    load();
     return Object.entries(devices).map(([id, info]) => ({
         deviceId: id,
+        deviceName: info.deviceName,
+        deviceType: info.deviceType,
         created: info.created,
         lastSeen: info.lastSeen,
-        online: info.online
+        online: info.online,
+        currentFWVersion: info.currentFWVersion
     }));
 }
 
