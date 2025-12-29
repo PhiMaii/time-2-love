@@ -2,24 +2,66 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Time2Love PWA Push</title>
+
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="stylesheet" href="./styles.css" />
+
 </head>
 
 <body>
-    <h1>Time2Love Push Notifications</h1>
-    <button id="subscribe">Enable Push Notifications</button>
-    <button id="unsubscribe">Disable Push Notifications</button>
-    <pre id="log"></pre>
+    <main class="wrap">
+        <section class="card">
+            <header class="header">
+                <div>
+                    <h1>Time2Love Push Notifications</h1>
+                    <p>Enable/disable push, view the subscription JSON, and watch the log output.</p>
+                </div>
+                <span class="pill">PWA • Push</span>
+            </header>
+
+            <div class="grid">
+                <div class="row">
+                    <div>
+                        <strong>Status</strong><br />
+                        <span id="stateText">Checking browser support…</span>
+                    </div>
+                    <div class="actions" style="margin:0;">
+                        <button id="subscribe" class="btn primary" type="button">Enable Push</button>
+                        <button id="unsubscribe" class="btn danger" type="button">Disable Push</button>
+                        <button id="clearlog" class="btn secondary" type="button">Clear Log</button>
+                    </div>
+                </div>
+
+                <pre id="log" class="code"></pre>
+
+                <div class="status" id="status" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <span>Tip: You need HTTPS (or <code>localhost</code>) for push + service workers.</span>
+            <span><a href="/" rel="noopener">Back to PWA</a></span>
+        </footer>
+    </main>
 
     <script>
         const logEl = document.getElementById('log');
+        const statusEl = document.getElementById('status');
+        const stateTextEl = document.getElementById('stateText');
+
+        function setStatus(msg, isError = false) {
+            statusEl.textContent = msg;
+            statusEl.style.color = isError ? "rgba(255,120,120,0.95)" : "rgba(255,255,255,0.70)";
+        }
+
         function log(msg) {
             console.log(msg);
             logEl.textContent += msg + "\n";
+            logEl.scrollTop = logEl.scrollHeight;
         }
 
         function urlBase64ToUint8Array(base64String) {
@@ -41,78 +83,128 @@
         }
 
         async function subscribeForPush() {
-            if (!('serviceWorker' in navigator)) {
-                alert("Service workers are not supported in this browser.");
-                return;
+            try {
+                if (!('serviceWorker' in navigator)) {
+                    alert("Service workers are not supported in this browser.");
+                    return;
+                }
+
+                setStatus("Registering service worker…");
+                log("⏳ Registering service worker...");
+                const registration = await resetOldSubscription();
+
+                setStatus("Fetching VAPID key…");
+                log("⏳ Fetching VAPID public key from server...");
+
+                // If you later move to /api/push/vapidPublicKey, change this:
+                const response = await fetch("/vapidPublicKey");
+                const data = await response.json();
+                const applicationServerKey = urlBase64ToUint8Array(data.publicKey);
+
+                setStatus("Creating subscription…");
+                log("⏳ Subscribing for push notifications...");
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey
+                });
+
+                log("✅ Push subscription created");
+                log(JSON.stringify(subscription, null, 2));
+
+                setStatus("Sending subscription to backend…");
+                log("⏳ Sending subscription to server...");
+
+                // If you later move to /api/push/register, change this:
+                await fetch("/registerPush", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(subscription)
+                });
+
+                log("✅ Subscription sent to server");
+                setStatus("Push enabled ✅");
+                alert("Push notifications enabled!");
+                await refreshState();
+            } catch (err) {
+                console.error(err);
+                setStatus(`Error: ${err?.message || err}`, true);
+                log(`❌ Error: ${err?.message || err}`);
             }
-
-            log("⏳ Registering service worker...");
-            const registration = await resetOldSubscription();
-
-            log("⏳ Fetching VAPID public key from server...");
-            const response = await fetch("/vapidPublicKey");
-            const data = await response.json();
-            const applicationServerKey = urlBase64ToUint8Array(data.publicKey);
-
-            log("⏳ Subscribing for push notifications...");
-            const subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey
-            });
-
-            log("✅ Push subscription created");
-            log(JSON.stringify(subscription, null, 2));
-
-            log("⏳ Sending subscription to server...");
-            await fetch("/registerPush", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(subscription)
-            });
-            log("✅ Subscription sent to server");
-
-            alert("Push notifications enabled!");
         }
 
         async function unsubscribeFromPush() {
-            if (!('serviceWorker' in navigator)) {
-                alert("Service workers are not supported in this browser.");
-                return;
+            try {
+                if (!('serviceWorker' in navigator)) {
+                    alert("Service workers are not supported in this browser.");
+                    return;
+                }
+
+                setStatus("Checking subscription…");
+                log("⏳ Looking for existing subscription...");
+
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+
+                if (!subscription) {
+                    log("ℹ️ No active push subscription found");
+                    setStatus("No active subscription.");
+                    alert("Push notifications are already disabled.");
+                    return;
+                }
+
+                setStatus("Unsubscribing…");
+                log("⏳ Unsubscribing...");
+                await subscription.unsubscribe();
+                log("✅ Push subscription removed");
+
+                setStatus("Informing backend…");
+                log("⏳ Informing server...");
+
+                // If you later move to /api/push/unregister, change this:
+                await fetch("/unregisterPush", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(subscription)
+                });
+
+                log("✅ Server updated");
+                setStatus("Push disabled ✅");
+                alert("Push notifications disabled!");
+                await refreshState();
+            } catch (err) {
+                console.error(err);
+                setStatus(`Error: ${err?.message || err}`, true);
+                log(`❌ Error: ${err?.message || err}`);
             }
-
-            log("⏳ Looking for existing subscription...");
-
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
-
-            if (!subscription) {
-                log("ℹ️ No active push subscription found");
-                alert("Push notifications are already disabled.");
-                return;
-            }
-
-            log("⏳ Unsubscribing...");
-            await subscription.unsubscribe();
-            log("✅ Push subscription removed");
-
-            // OPTIONAL: inform your server
-            log("⏳ Informing server...");
-            await fetch("/unregisterPush", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(subscription)
-            });
-            log("✅ Server updated");
-
-            alert("Push notifications disabled!");
         }
 
-        document
-            .getElementById("subscribe")
-            .addEventListener("click", subscribeForPush);
-        document
-            .getElementById("unsubscribe")
-            .addEventListener("click", unsubscribeFromPush);
+        async function refreshState() {
+            const swOk = ('serviceWorker' in navigator);
+            const pmOk = ('PushManager' in window);
+
+            if (!swOk || !pmOk) {
+                stateTextEl.textContent = "Push not supported in this browser.";
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const sub = await registration.pushManager.getSubscription();
+                stateTextEl.textContent = sub ? "Push is ENABLED (subscription exists)." : "Push is DISABLED (no subscription).";
+            } catch (e) {
+                stateTextEl.textContent = "Could not determine state.";
+            }
+        }
+
+        document.getElementById("subscribe").addEventListener("click", subscribeForPush);
+        document.getElementById("unsubscribe").addEventListener("click", unsubscribeFromPush);
+        document.getElementById("clearlog").addEventListener("click", () => {
+            logEl.textContent = "";
+            setStatus("Log cleared.");
+        });
+
+        // Initial UI state
+        refreshState();
     </script>
 </body>
 
