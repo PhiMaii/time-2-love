@@ -1,12 +1,33 @@
 {
-  "esp8266-01": {
-    "created": 1766922573369,
-    "lastSeen": 1766937315762,
-    "online": false
+  "0": {
+    "deviceId": "time2love-01",
+    "deviceName": "T2L Liberty",
+    "deviceType": "t2l-device",
+    "created": 1714300000000,
+    "lastSeen": 1714303600000,
+    "online": true,
+    "currentFWVersion": "1.2.3"
   },
-  "expo-listener": {
-    "created": 1766927299975,
-    "lastSeen": 1766937387532,
-    "online": false
+  "1": {
+    "deviceId": "time2love-02",
+    "deviceName": "T2L Philipp",
+    "deviceType": "t2l-device",
+    "created": 1714200000000,
+    "lastSeen": 1714301000000,
+    "online": false,
+    "currentFWVersion": "1.1.0"
+  },
+  "2": {
+    "deviceId": "expo-listener",
+    "deviceName": "Expo Listener",
+    "deviceType": "expo-listener",
+    "created": 1714000000000,
+    "lastSeen": 1714303500000,
+    "online": true
+  },
+  "esp8266-01": {
+    "created": 1767045168020,
+    "lastSeen": 1767046884520,
+    "online": true
   }
 }
