@@ -4,7 +4,7 @@ self.addEventListener("push", event => {
 
     const options = {
         body: data.body,
-        icon: "../config/heart.png",
+        icon: "/heart.png",
     };
 
     event.waitUntil(
