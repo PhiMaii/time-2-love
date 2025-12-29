@@ -48,6 +48,14 @@ function start(push, devices, aedes) {
         res.json({ publicKey: require("../config/vapid.json").publicKey });
     });
 
+    // Health check endpoint
+    app.get("/health", (req, res) => {
+        // You can add extra checks here (db ping, cache ping, etc.)
+        // If everything is OK:
+        console.log("HEALTH Check OK")
+        res.status(200).json({ ok: true, time: new Date().toISOString() });
+    });
+
     // Serve PWA files
     app.use("/", express.static(path.join(__dirname, "../pwa")));
 
