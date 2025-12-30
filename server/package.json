@@ -12,6 +12,6 @@
     "ws": "^8.18.3"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/index.js"
   }
 }
