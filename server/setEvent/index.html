@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Set Event</title>
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+    <main class="wrap">
+        <section class="card">
+            <header class="header">
+                <div>
+                    <h1>Set Event Time</h1>
+                    <p>Select a date/time, convert to Unix seconds (UTC), and send it to the backend.</p>
+                </div>
+                <span class="pill">/setEvent</span>
+            </header>
+
+            <div class="grid">
+                <label class="field">
+                    <span>Date &amp; Time</span>
+                    <input id="dt" type="datetime-local" step="1" />
+                    <small>We’ll interpret this as UTC and build an ISO string ending with <code>Z</code>.</small>
+                </label>
+
+                <div class="field">
+                    <span>ISO (UTC)</span>
+                    <input id="iso" type="text" readonly />
+                    <small>Example: <code>2026-01-23T18:41:00Z</code></small>
+                </div>
+
+                <div class="field">
+                    <span>Unix seconds</span>
+                    <input id="unix" type="text" readonly />
+                    <small>Computed as <code>Math.floor(new Date(iso).getTime()/1000)</code></small>
+                </div>
+
+                <div class="actions">
+                    <button id="btnNow" class="btn secondary" type="button">Use now (UTC)</button>
+                    <button id="btnSend" class="btn primary" type="button">Send to backend</button>
+                </div>
+
+                <pre class="code" id="codePreview"></pre>
+
+                <div class="status" id="status" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <span>Tip: Bookmark <code>/setEvent</code> for quick access.</span>
+        </footer>
+    </main>
+
+    <script src="./app.js"></script>
+</body>
+
+</html>

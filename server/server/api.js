@@ -1,6 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 const path = require("path");
+
+const EVENTS_FILE = path.join(__dirname, "../data/events.json");
 
 function start(push, devices, aedes) {
     const app = express();
@@ -19,16 +22,20 @@ function start(push, devices, aedes) {
         res.json(devices.list());
     });
 
-    // TODO: Send config to device
     app.post("/device/:id/config", (req, res) => {
         const deviceId = req.params.id;
-        const list = devices.list().map(d => d.deviceId);
-        if (!list.includes(deviceId)) return res.status(404).json({ error: "Unknown device" });
 
-        const topic = `time2love/device/${deviceId}/config`;
-        aedes.publish({ topic, payload: JSON.stringify(req.body), qos: 1 }, () => {
-            res.json({ ok: true });
-        });
+        // TODO: Send config to device
+        res.sendStatus(501);
+
+    });
+
+    app.get("/device/:id/config", (req, res) => {
+        const deviceId = req.params.id;
+
+        // TODO: Get config from device
+        res.sendStatus(501);
+
     });
 
     // Register a device for push notifications
@@ -56,12 +63,47 @@ function start(push, devices, aedes) {
         res.status(200).json({ ok: true, time: new Date().toISOString() });
     });
 
+    app.post("/setEvent/api", (req, res) => {
+        const { iso, unix } = req.body || {};
+
+        if (typeof iso !== "string" || typeof unix !== "number" || !Number.isFinite(unix)) {
+            return res.status(400).json({ ok: false, error: "Expected { iso: string, unix: number }" });
+        }
+
+        console.log("[setEvent] received:", { iso, unix });
+        try {
+            fs.writeFileSync(EVENTS_FILE, JSON.stringify({ iso, unix, savedAt: Date.now() }, null, 2));
+        } catch (err) {
+            console.error("[setEvent] failed to save event:", err);
+            return res.status(500).json({ ok: false, error: "Failed to save event" });
+        }
+
+        res.json({ ok: true, received: { iso, unix } });
+    });
+
     // Serve PWA files
-    app.use("/", express.static(path.join(__dirname, "../pwa")));
+    app.use("/",
+        express.static(path.join(__dirname, "../pwa"), {
+            index: "index.html",
+        }));
+
+    app.use(
+        "/setEvent",
+        express.static(path.join(__dirname, "../setEvent"), {
+            index: "index.html",
+        })
+    );
+
+    app.use("/ota",
+        express.static(path.join(__dirname, "../ota"), {
+            index: "index.html",
+        }));
 
     // Start server
     const PORT = 3000;
     app.listen(PORT, () => console.log(`REST API listening on port ${PORT}`));
+
+    console.log("Server URL: http://localhost:3000/ \n");
 }
 
 module.exports = { start };
