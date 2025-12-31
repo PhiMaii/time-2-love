@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OTA Firmware Manager</title>
+    <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+    <main class="wrap">
+        <section class="card">
+            <header class="header">
+                <div>
+                    <h1>OTA Firmware Manager</h1>
+                    <p>Upload firmware, set a version, and choose one build as <strong>production</strong>.</p>
+                </div>
+                <span class="pill">/ota</span>
+            </header>
+
+            <div class="grid">
+                <div class="row">
+                    <div>
+                        <strong>Upload</strong><br />
+                        <span>Choose a <code>.bin</code> file and enter a version string.</span>
+                    </div>
+                </div>
+
+                <div class="uploadGrid">
+                    <label class="field">
+                        <span>Firmware file</span>
+                        <input id="file" type="file" accept=".bin,application/octet-stream" />
+                        <small>Recommended: <code>firmware.bin</code></small>
+                    </label>
+
+                    <label class="field">
+                        <span>Version</span>
+                        <input id="version" type="text" placeholder="e.g. 1.2.3 or 2026.01.23" />
+                        <small>Stored as metadata next to the file.</small>
+                    </label>
+                </div>
+
+                <div class="actions">
+                    <button id="btnUpload" class="btn primary" type="button">Upload</button>
+                    <button id="btnRefresh" class="btn secondary" type="button">Refresh list</button>
+                </div>
+
+                <div class="row">
+                    <div>
+                        <strong>Available firmware</strong><br />
+                        <span>Select one and set it as <strong>production</strong>.</span>
+                    </div>
+                    <div class="actions" style="margin:0;">
+                        <button id="btnSetProd" class="btn primary" type="button">Set as production</button>
+                    </div>
+                </div>
+
+                <div class="tableWrap">
+                    <table class="table" aria-label="Firmware files">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>File</th>
+                                <th>Version</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Production</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            <tr>
+                                <td colspan="6" class="muted">Loading…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <pre class="code" id="log"></pre>
+                <div class="status" id="status" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <span>API: <code>/api/ota/*</code></span>
+            <span><a href="/" rel="noopener">Back to PWA</a></span>
+        </footer>
+    </main>
+
+    <script src="./app.js"></script>
+</body>
+
+</html>
