@@ -27,3 +27,78 @@ server/data/devices.json
 server/data/events.json
 server/data/pushSubscriptions.json
 server/data/devices.json
+
+# =========================
+# PlatformIO
+# =========================
+.pio/
+.pioenvs/
+.piolibdeps/
+.piotest/
+.pio/build/
+.pio/libdeps/
+
+# PlatformIO IDE specific
+.platformio/
+
+# =========================
+# VS Code
+# =========================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Local VS Code workspace files
+*.code-workspace
+
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.fseventsd
+
+# =========================
+# Build artifacts
+# =========================
+*.o
+*.a
+*.elf
+*.hex
+*.bin
+*.map
+
+# =========================
+# Logs & temp files
+# =========================
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# =========================
+# Python (PlatformIO uses Python)
+# =========================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv
+venv/
+
+# =========================
+# OS / Editor backups
+# =========================
+*.bak
+*.old
+*.orig
