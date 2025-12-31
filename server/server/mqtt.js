@@ -20,7 +20,16 @@ MQTT Topics:
     - published: server
     - subscribed: devices
 
+    retain: true
+    QoS 1
+
     TODO: Maybe use http instead?
+
+- time2love/device/status
+    - published: devices
+    - subscribed: server
+
+    {deviceId: "devA", status: "online", ts: 1735490000 }
 
 ##########
 
