@@ -23,3 +23,7 @@ server/vapid.json
 
 server/node_modules
 server/data/pushSubscriptions.json
+server/data/devices.json
+server/data/events.json
+server/data/pushSubscriptions.json
+server/data/devices.json
