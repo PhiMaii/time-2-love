@@ -1,3 +1,6 @@
 [submodule "client/time-2-love-client"]
 	path = client/time-2-love-client
 	url = https://github.com/PhiMaii/time-2-love-client.git
+[submodule "moblie-app/time-2-love-app"]
+	path = moblie-app/time-2-love-app
+	url = https://github.com/PhiMaii/time-2-love-app.git
