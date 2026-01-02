@@ -1,0 +1,3 @@
+[submodule "time-2-love-client"]
+	path = esp_client/time-2-love-client
+	url = https://github.com/PhiMaii/time-2-love-client.git
